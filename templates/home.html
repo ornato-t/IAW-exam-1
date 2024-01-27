@@ -1,21 +1,19 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} 
-
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% set title = 'home' %}
 {% block content %}
-<main>
-  <h1>I nostri annunci</h1>
-  {% for ad in advertisements %}
-    <article class="card">
-        {{ad.title}} in {{ad.adress}}
-        <br>
-        Affittata da: {{ad.landlord_name}}
-        <br>
-        Tipologia: {{ad.type}}
-        <br>
-        {{ad.rent}}€ / mese
-        <br>
-        {{ 'Arredato' if ad.furniture else 'Non arredato' }}
-    </article>
-    <br>
-  {% endfor %}
-</main>
-{% endblock %}
+<h1>I nostri annunci</h1>
+{% for ad in advertisements %}
+<article class="card">
+  {{ad.title}} in {{ad.adress}}
+  <br />
+  Affittata da: {{ad.landlord_name}}
+  <br />
+  Tipologia: {{ad.type}}
+  <br />
+  {{ad.rent}}€ / mese
+  <br />
+  {{ 'Arredato' if ad.furniture else 'Non arredato' }}
+</article>
+<br />
+{% endfor %} {% endblock %}

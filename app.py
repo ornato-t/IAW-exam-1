@@ -8,3 +8,7 @@ def home():
     advertisements = ads.get_public_ads()
     return render_template('home.html', advertisements=advertisements)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
