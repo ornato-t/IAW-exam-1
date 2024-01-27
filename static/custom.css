@@ -1,0 +1,26 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+.navbar-brand {
+    display: flex;
+    place-items: center;
+    gap: 0.5rem;
+}
+
+.footer {
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    align-items: center;
+}
+
+.footer-buttons{
+    margin-left: auto;
+}
