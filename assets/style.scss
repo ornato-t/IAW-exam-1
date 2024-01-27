@@ -1,0 +1,12 @@
+// Defining custom variables for our theme
+$primary: #d1c1d7;
+$secondary: #f6cbd1;
+$success: #00A96E;
+$danger: #FF5861;
+$warning: #FFBE00;
+$info: #00B5FF;
+$light: #F9FAFB;
+$dark: #a0a5ab;
+
+// Importing Bootstrap
+@import './bootstrap/bootstrap.scss';
