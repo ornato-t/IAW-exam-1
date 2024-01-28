@@ -1,10 +1,11 @@
 import sqlite3
 
-def get_public_ads():
+def get_public_ads(sort_price):
     """
     Queries the database and returns a list of advertisements
 
-    :returns: a list of all advertisements on the site
+    :param sort_price: whether the list should be sort by price (if false sorts by number of rooms)
+    :returns: a list of all advertisements on the site, sorted according to the parameter
     """ 
     conn = sqlite3.connect('database/database.db')
     conn.row_factory = sqlite3.Row
@@ -29,11 +30,16 @@ def get_public_ads():
         ad['rooms'] = get_rooms(ad['rooms'])
         ad['furniture'] = get_furniture(ad['furniture'], ad['type'])
         ad['type'] = get_type(ad['type'])
+        ad['rent_num'] =ad['rent']
         ad['rent'] = get_rent(ad['rent'])
-        print(ad)
+
         result.append(ad)
 
-    return result
+    if sort_price:
+        return sorted(result, key=lambda x: x['rent_num'], reverse=True)
+    else:
+        return sorted(result, key=lambda x: x['rooms'], reverse=False)
+
 
 def get_rooms(num):
     """
