@@ -36,19 +36,31 @@ main {
 }
 
 .adverts {
-    padding: 1rem 2rem 6rem 2rem;
+    flex-grow: 1;
+    padding: 3rem 2rem 5rem 2rem;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     place-items: center;
-    height: 100%;
-    flex-grow: 1;
+    align-items: stretch;
 }
 
-.card {
-    width: 15rem;
-    height: fit-content;
+.ad-card {
+    width: 18rem;
+    max-height: 32rem;
 }
 
-.adButton {
-    margin-left: auto
+.ad-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-end {
+    display: flex;
+    align-items: flex-end;
+}
+
+.ad-button {
+    margin-left: auto;
+    place-self: end;
 }

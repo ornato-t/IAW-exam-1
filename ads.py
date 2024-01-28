@@ -1,4 +1,5 @@
 import sqlite3
+import locale
 
 def get_public_ads(sort_price):
     """
@@ -92,12 +93,13 @@ def get_furniture(furniture, house_type):
     else:
         result += ' arredato'
 
-    return result.capitalize()
+    return result
 
 def get_rent(num):
     """
     :param num: rent attribute, from the DB
-    :returns: a string representation of the rent parameter, truncated to two decimal positions and with a comma as a separator
+    :returns: a string representation of the rent parameter with the Italian number formatting (point as a thousand separator, comma as a decimal separator)
     """
-
-    return f'{num:.2f}'.replace('.', ',')
+    
+    locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
+    return locale.format("%.2f", num, grouping=True)
