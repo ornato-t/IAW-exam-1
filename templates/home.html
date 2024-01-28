@@ -1,19 +1,31 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% set title = 'home' %}
+
 {% block content %}
-<h1>I nostri annunci</h1>
-{% for ad in advertisements %}
-<article class="card">
-  {{ad.title}} in {{ad.adress}}
-  <br />
-  Affittata da: {{ad.landlord_name}}
-  <br />
-  Tipologia: {{ad.type}}
-  <br />
-  {{ad.rent}}€ / mese
-  <br />
-  {{ 'Arredato' if ad.furniture else 'Non arredato' }}
-</article>
-<br />
-{% endfor %} {% endblock %}
+
+    <header class="hero bg-secondary-subtle text-content-secondary">
+        <h1 class="fs-1">
+            renTO
+        </h1>
+        <p>
+            Il numero uno per gli affitti a Torino.
+        </p>
+    </header>
+
+    <section class="adverts bg-secondary">
+        {% for ad in advertisements %}
+            <article class="card">
+                <img src="/static/images/{{ad.image}}" class="card-img-top" alt="{{ad.title}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ad.title}} - {{ad.rent}}€/mese</h5>
+                    <p class="card-text">{{ad.type}} {{ ad.furniture }}- {{ad.rooms}} locali</p>
+                    <p class="card-text">{{ad.adress}}</p>
+                    <p class="card-text">{{ad.description}}</p>
+                    <a href="#" class="btn btn-primary adButton">Annuncio</a>
+                </div>
+            </article>
+        {% endfor %}
+    </section>
+
+{% endblock %}

@@ -1,3 +1,5 @@
+/* BASE TEMPLATE */
+
 body {
     display: flex;
     flex-direction: column;
@@ -23,4 +25,30 @@ main {
 
 .footer-buttons{
     margin-left: auto;
+}
+
+/* HOME PAGE */
+
+.hero {
+    display: grid;
+    place-items: center;
+    padding: 5rem 6rem 6rem 5rem;
+}
+
+.adverts {
+    padding: 1rem 2rem 6rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    place-items: center;
+    height: 100%;
+    flex-grow: 1;
+}
+
+.card {
+    width: 15rem;
+    height: fit-content;
+}
+
+.adButton {
+    margin-left: auto
 }

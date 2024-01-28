@@ -29,14 +29,14 @@
           </ul>
           <aside class="d-flex gap-2 fs-5">
             <!-- TODO: If logged in replace this with link to personal page  -->
-            <a class="btn btn-outline-secondary text-dark" href="/TODO">Registrati</a>
+            <a class="btn btn-outline-secondary text-body" href="/TODO">Registrati</a>
             <a class="btn btn-secondary" href="/TODO">Log in</a>
           </aside>
         </div>
       </div>
     </nav>
 
-    <main>{% block content %}{% endblock %}</main>
+    <main class="d-flex flex-column">{% block content %}{% endblock %}</main>
 
     <footer class="footer bg-primary-subtle">
       <i class="bx bx-home-smile bx-lg"></i>
