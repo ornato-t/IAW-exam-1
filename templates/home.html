@@ -18,13 +18,13 @@
             <article class="card ad-card">
                 <img src="/static/images/{{ad.image}}" class="card-img-top" alt="{{ad.title}}">
                 <div class="card-body ad-body">
-                    <h6 class="card-title text-dark">{{ad.title}}</h6>
-                    <h5 class="card-title fs-6"> <span class="fs-2">{{ad.rent}}</span> €/mese</h5>
-                    <p class="card-text">{{ad.type}} {{ ad.furniture }} - {{ad.rooms}} locali</p>
-                    <p class="card-text">{{ad.adress}}</p>
-                    <p class="card-text">{{ad.description}}</p>
+                    <h6 class="card-text text-dark mb-0">{{ad.title}}</h6>
+                    <h5 class="card-title fs-6"><span class="fs-2">{{ad.rent}}</span> €/mese</h5>
+                    <span class="card-text font-monospace">{{ad.adress}}</span>
+                    <span class="card-text fst-italic">{{ad.type}} {{ ad.furniture }}, {{ad.rooms}} locali</span>
+                    <span class="card-text ad-description my-3">{{ad.description}}</span>
                     <div class="card-end">
-                        <a href="/advertisement/{{ad.id}}" class="btn btn-primary ad-button">Visualizza</a>
+                      <a href="/advertisement/{{ad.id}}" class="btn btn-primary ad-button">Visualizza</a>
                     </div>
                 </div>
             </article>

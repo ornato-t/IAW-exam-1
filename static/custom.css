@@ -55,6 +55,14 @@ main {
     justify-content: space-between;
 }
 
+
+.ad-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;    
+}
+
 .card-end {
     display: flex;
     align-items: flex-end;
