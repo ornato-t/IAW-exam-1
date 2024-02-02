@@ -1,0 +1,5 @@
+- Change navbar if user is logged in
+  - add logout button
+  - add button to personal page (person boxicon)
+- Style personal frontend page
+  - two separate versions from renteres and landlords

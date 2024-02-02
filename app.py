@@ -81,12 +81,17 @@ def post_login():
         login_user(user, True)
 
         flash('Login completato con successo')
-        return redirect(url_for('get_home'))
+        return redirect(url_for('get_personal'))
 
     except HTTPException as e:
         flash(str(e))
 
         return redirect(url_for('get_login'))
+
+@app.route('/personal')
+@login_required
+def get_personal():
+    return render_template('personal.html')
 
 # VALIDATION FUNCTIONS
 
