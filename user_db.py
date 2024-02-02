@@ -20,3 +20,18 @@ def add_user(user):
     finally:
         cursor.close()
         conn.close()
+
+def get_user(username):
+    conn = sqlite3.connect('database/database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    sql = 'SELECT username, email, password, name, landlord FROM PERSON WHERE username = ?'
+
+    cursor.execute(sql, (username,))
+    user = cursor.fetchone()
+    
+    cursor.close()
+    conn.close()
+
+    return user

@@ -1,7 +1,8 @@
 import uuid
 import re
 from flask import Flask, render_template, redirect, url_for, request, flash
-from werkzeug.exceptions import HTTPException, BadRequest
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import ads
@@ -10,6 +11,20 @@ from models import User
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = uuid.uuid4().hex
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def login(username):
+    db_user = user_db.get_user(username)
+
+    if db_user is not None:
+        user = User(username=db_user['username'], email=db_user['email'], landlord=db_user['landlord'], name=db_user['name'], password=db_user['password'])
+    else:
+        user = None
+
+    return user
 
 @app.route('/')
 def get_home():
@@ -41,8 +56,10 @@ def post_signup():
 
         flash('Account creato con successo. Puoi procedere al login.')
         return redirect(url_for('get_login'))
+
     except HTTPException as e:
         flash(str(e))
+
         return redirect(url_for('get_signup'))
 
 @app.route('/login')
@@ -52,15 +69,23 @@ def get_login():
 @app.route('/login', methods=['POST'])
 def post_login():
     try:
-        user = request.form.to_dict()
-        validate_login(user)   # Raises an exception if the form is invalid
+        form_user = request.form.to_dict()
+        validate_login(user = form_user)   # Raises an exception if the form is invalid
         
-        print(user)
-        # TODO: login logic goes here
+        db_user = user_db.get_user(username = form_user['username'])
 
+        if not db_user or not check_password_hash(db_user['password'], form_user['password']):
+            raise Unauthorized("Email o password non corrette")
+
+        user = User(username=db_user['username'], email=db_user['email'], landlord=db_user['landlord'], name=db_user['name'], password=db_user['password'])
+        login_user(user, True)
+
+        flash('Login completato con successo')
         return redirect(url_for('get_home'))
+
     except HTTPException as e:
         flash(str(e))
+
         return redirect(url_for('get_login'))
 
 # VALIDATION FUNCTIONS

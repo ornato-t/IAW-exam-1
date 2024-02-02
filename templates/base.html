@@ -41,6 +41,7 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
+                <!-- TODO: pass second parameter in flash to set colour -->
                 <div class="alert alert-warning mb-0" role="alert">
                     {{ message }}
                 </div>
