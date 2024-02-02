@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Registrazione{% endblock %}
+{% set title = 'registrazione' %}
+{% block content %}
+<form class="container w-25 my-4" method="post">
+    <h2>
+        Registrazione
+    </h2>
+    <p>
+        Benvenuto! Abbiamo bisogno di un paio di informazioni per creare il tuo account.
+    </p>
+    <section class="mb-3">
+        <label for="usernameForm" class="form-label">Username</label>
+        <input 
+            class="form-control"
+            placeholder="mario_rossi" name="username" id= "usernameForm" type="text" aria-describedby="usernameFormDescr"
+            required pattern="[a-zA-Z0-9_]{1,30}" autocapitalize="off"
+        >
+        <div id="usernameFormDescr" class="form-text">
+            Scegli attentamente, non potrai modificarlo in seguito. Può contenere lettere, numeri e trattini bassi.
+        </div>
+    </section>
+    <section class="mb-3">
+        <label for="emailForm" class="form-label">Indirizzo email</label>
+        <input 
+            class="form-control"
+            placeholder="email@example.com" name="email" id="emailForm" type="email"
+            required
+        >
+    </section>
+    <section class="mb-3">
+        <label for="nameForm" class="form-label">Nome</label>
+        <input
+            class="form-control"
+            placeholder="Mario" name="name" id="nameForm" type="text" aria-describedby="nameFormDescr"
+            required autocapitalize="on" pattern="[a-zA-Z'\s]{1,30}"
+        >
+        <div id="nameFormDescr" class="form-text">
+            Il tuo vero nome. Sarà visibile agli altri utenti del sito.
+        </div>
+    </section>
+    <section class="mb-3">
+        <label for="passwordForm" class="form-label">Password</label>
+        <input
+            class="form-control"
+            placeholder="•••••••" name="password" id="passwordForm" type="password" aria-describedby="passwordFormDescr"
+            required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$"
+        >
+        <div id="passwordFormDescr" class="form-text">
+            La tua password dovrà contenere un minimo di 8 caratteri, una lettera minuscola, una lettera maiuscola, un numero e un carattere speciale.
+        </div>
+    </section>
+    <fieldset class="row mb-3">
+        <legend class="col-form-label">Voglio registrarmi come:</legend>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="client_type" id="clientForm1" value="client" checked>
+                    <label class="form-check-label" for="clientForm1">
+                        Cliente
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="client_type" id="clientForm2" value="landlord">
+                    <label class="form-check-label" for="clientForm2">
+                        Locatore
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    
+    <button type="submit" class="btn btn-primary mt-2">Crea account</button>
+  </form>
+{% endblock %}
