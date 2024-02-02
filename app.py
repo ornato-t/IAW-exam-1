@@ -49,6 +49,20 @@ def post_signup():
 def get_login():
     return render_template('login.html')
 
+@app.route('/login', methods=['POST'])
+def post_login():
+    try:
+        user = request.form.to_dict()
+        validate_login(user)   # Raises an exception if the form is invalid
+        
+        print(user)
+        # TODO: login logic goes here
+
+        return redirect(url_for('get_home'))
+    except HTTPException as e:
+        flash(str(e))
+        return redirect(url_for('get_login'))
+
 # VALIDATION FUNCTIONS
 
 def validate_signup(user):
@@ -74,3 +88,18 @@ def validate_signup(user):
         raise BadRequest("Invalid password")
     if user['client_type'] not in client_types:
         raise BadRequest("Invalid client type")
+
+def validate_login(user):
+    """
+    Validates a sign up form, as received by the /login route
+
+    :param user: the form to be validated
+    :raise BadRequest: exception raised when the form isn't valid    
+    """ 
+    username_regex = r'^[a-zA-Z0-9_]{1,30}$'
+    password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$'
+
+    if not re.match(username_regex, user['username']):
+        raise BadRequest("Invalid username")
+    if not re.match(password_regex, user['password']):
+        raise BadRequest("Invalid password")

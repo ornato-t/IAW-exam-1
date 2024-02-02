@@ -1,6 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
-{% set title = '' %}
+{% block title %}Log in{% endblock %}
+{% set title = 'login' %}
 {% block content %}
-This logs you in
+<form class="container w-25 my-4" method="post">
+    <h2>Log in</h2>
+    <p class="mb-1">Bentornato! Inserisci i tuoi dati per accedere alla tua area personale.</p>
+    <p><small>Non hai un account? <a href="/signup">Registrati</a> ora per poter accedere a renTO!</small></p>  
+    
+    <section class="mb-3">
+        <label for="usernameForm" class="form-label">Username</label>
+        <input 
+            class="form-control"
+            placeholder="mario_rossi" name="username" id= "usernameForm" type="text"
+            required pattern="[a-zA-Z0-9_]{1,30}" autocapitalize="off"
+        >
+    </section>
+    <section class="mb-3">
+        <label for="passwordForm" class="form-label">Password</label>
+        <input
+            class="form-control"
+            placeholder="•••••••" name="password" id="passwordForm" type="password"
+            required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$"
+        >
+    </section>
+    
+    <button type="submit" class="btn btn-primary mt-2">Entra</button>
+  </form>
 {% endblock %}
