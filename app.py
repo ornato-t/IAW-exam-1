@@ -2,8 +2,11 @@ import uuid
 import re
 from flask import Flask, render_template, redirect, url_for, request, flash
 from werkzeug.exceptions import HTTPException, BadRequest
+from werkzeug.security import generate_password_hash, check_password_hash
 
 import ads
+import user_db
+from models import User
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = uuid.uuid4().hex
@@ -30,7 +33,12 @@ def post_signup():
     try:
         user = request.form.to_dict()
         validate_signup(user)   # Raises an exception if the form is invalid
-        # TODO: database logic goes in here
+
+        user['password'] = generate_password_hash(user['password'])
+        
+        if not user_db.add_user(user):  # Returns False if an error occurred
+            raise BadRequest("Errore durante la creazione dell'account.")
+
         flash('Account creato con successo. Puoi procedere al login.')
         return redirect(url_for('get_login'))
     except HTTPException as e:
