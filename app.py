@@ -75,7 +75,7 @@ def post_login():
         db_user = user_db.get_user(username = form_user['username'])
 
         if not db_user or not check_password_hash(db_user['password'], form_user['password']):
-            raise Unauthorized("Email o password non corrette")
+            raise Unauthorized("Username o password non corretti")
 
         user = User(username=db_user['username'], email=db_user['email'], landlord=db_user['landlord'], name=db_user['name'], password=db_user['password'])
         login_user(user, True)
@@ -92,6 +92,12 @@ def post_login():
 @login_required
 def get_personal():
     return render_template('personal.html')
+
+@app.route('/logout', methods=['POST'])
+@login_required
+def post_logout():
+    logout_user()
+    return redirect(url_for('get_home'))
 
 # VALIDATION FUNCTIONS
 
