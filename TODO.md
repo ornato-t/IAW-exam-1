@@ -1,2 +1,11 @@
 - Style personal frontend page
-  - two separate versions from renteres and landlords
+  - landlord version extends renter version
+    - because of this, landlord should view their requests and visits (as customer) after their own apartments
+    - landlord views requests first, then their apartments, then their visit
+      - same layout for apartments
+      - list (no card) layout for requests
+  - client vies their request firsts, then their visits
+- Style ad page
+  - if landlord of that house, disabled button and explanation, otherwise book visit
+  - booking goes on separate page /ad/ID/book
+  - if renter is awaiting visit confirmation also disable button

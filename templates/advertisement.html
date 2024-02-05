@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ ad.title }}{% endblock %}
+{% set title = ad.title %}
+{% block content %}
+
+<article class="container w-50 my-4">
+    <img src="{{ url_for('static', filename='images/'+ad.images[0]) }}" alt="Immagine della casa" class="w-25 mx-auto">
+    <br>
+    <i>{{ad.adress}}</i>
+    <ul>
+        <li>Stanze: {{ad.rooms}}</li>
+        <li>{{ad.type}}</li>
+        <li>{{ad.furniture}}</li>
+    </ul>
+    <h2>{{ ad.title }}</h2>
+    <h4>{{ ad.rent }}</h4>
+    <p>Affittata da: {{ad.landlord_name}}</p>
+    <span>Descizione:</span>
+    <p>{{ad.description }}</p>
+
+
+    <!-- if available && if landlord_username !== current_user.username: show button, otherwise show disabled button -->
+    <!-- if renter is awaiting visit confirmation disable button -->
+</article>
+{% endblock %}

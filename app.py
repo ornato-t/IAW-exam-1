@@ -2,7 +2,7 @@ import uuid
 import re
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized
+from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, NotFound
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import ads
@@ -33,7 +33,17 @@ def get_home():
 
 @app.route('/advertisement/<int:id>')
 def get_advertisement(id):
-    return f'Advertisement with id {id}'
+    try:
+        advertisement = ads.get_ad_by_id(id=id)
+        if advertisement == None:
+            raise NotFound('Nessun annuncio corrispondente trovato')
+
+        return render_template('advertisement.html', ad=advertisement)
+    except HTTPException as e:
+        flash(str(e))
+
+        return redirect(url_for('get_home'))
+
 
 @app.route('/about')
 def get_about():

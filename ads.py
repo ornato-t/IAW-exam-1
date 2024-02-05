@@ -11,7 +11,7 @@ def get_public_ads(sort_price):
     conn = sqlite3.connect('database/database.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-
+    #TODO: ensure that all of these information are needed, in particular landlord's
     cursor.execute("""
         SELECT A.id, A.adress, A.title, A.rooms, A.type, A.description, A.rent, A.furniture, P.name as landlord_name, P.username as landlord_username, PI.path as image
         FROM ADVERTISEMENT A
@@ -41,6 +41,46 @@ def get_public_ads(sort_price):
     else:
         return sorted(result, key=lambda x: x['rooms'], reverse=False)
 
+def get_ad_by_id(id):
+    """
+    Queries the database and returns a matching advertisement
+
+    :param id: the id of the advertisement to be searched
+    :returns: the advertisement
+    """ 
+    conn = sqlite3.connect('database/database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    sql = """
+        SELECT A.id, A.adress, A.title, A.rooms, A.type, A.description, A.rent, A.furniture, A.available,
+            P.name as landlord_name, 
+            GROUP_CONCAT(PI.path) AS images
+        FROM ADVERTISEMENT A
+        INNER JOIN PERSON P ON P.username = A.landlord_username
+        INNER JOIN PICTURES PI ON PI.ADVERTISEMENT_id = A.id
+        WHERE A.id = ?
+        LIMIT 1;
+    """
+    cursor.execute(sql, (id,))
+    res = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    if res is None or res[0] is None:
+        return None
+
+    advert = dict(res)
+
+    advert['rooms'] = get_rooms(advert['rooms'])
+    advert['furniture'] = get_furniture(advert['furniture'], advert['type'])
+    advert['type'] = get_type(advert['type'])
+    advert['rent_num'] = advert['rent']
+    advert['rent'] = get_rent(advert['rent'])
+    advert['images'] = advert['images'].split(',')
+
+    return advert
 
 def get_rooms(num):
     """
