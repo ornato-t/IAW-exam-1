@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ ad.title }}{% endblock %}
+{% set title = ad.title %}
+{% block content %}
+
+<article class="container w-50 my-4">
+    <header class="row">
+        <div class="col-md-9">
+           <h2>{{ ad.title }}</h2>
+           <h5>{{ ad.type }} {{ ad.furniture }} in {{ ad.adress }} - {{ad.rooms}} locali</h5>
+        </div>
+        <div class="col-md-3 text-right mt-auto">
+           <h3>{{ ad.rent }} €/mese</h3>
+        </div>
+    </header>
+
+    Visit it!
+</article>
+{% endblock %}

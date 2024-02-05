@@ -54,7 +54,7 @@ def get_ad_by_id(id):
 
     sql = """
         SELECT A.id, A.adress, A.title, A.rooms, A.type, A.description, A.rent, A.furniture, A.available,
-            P.name as landlord_name, 
+            P.name as landlord_name, P.username as landlord_username, 
             GROUP_CONCAT(PI.path) AS images
         FROM ADVERTISEMENT A
         INNER JOIN PERSON P ON P.username = A.landlord_username

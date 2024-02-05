@@ -5,7 +5,4 @@
       - same layout for apartments
       - list (no card) layout for requests
   - client vies their request firsts, then their visits
-- Style ad page
-  - if landlord of that house, disabled button and explanation, otherwise book visit
-  - booking goes on separate page /ad/ID/book
-  - if renter is awaiting visit confirmation also disable button
+- Style reservation page

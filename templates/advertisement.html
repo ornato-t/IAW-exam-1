@@ -33,11 +33,20 @@
         <div class="col-md-9">
             <p><strong class="fw-semibold">Locatore:</strong> {{ad.landlord_name}}</p>
         </div>
+    
         <div class="col-md-3 d-flex flex-column justify-content-end">
-            <a href="{{ad.id}}/visit" class="btn btn-secondary">Prenota una visita</a>
-                <small class="mt-1 mb-0 lh-sm">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                </small>
+            {% if not current_user.is_authenticated %}
+                <a class="btn btn-secondary disabled">Effettua il login per prenotare una visita</a>
+            {% elif current_user.username == ad.landlord_username %}
+                <a href="/personal" class="btn btn-secondary">Controlla le prenotazioni</a>
+            {% elif False %}
+                <!-- TODO: check reservations and return two booleans if current user 1. is yet to visit, 2. has already visited -->
+                <a class="btn btn-secondary disabled">Abitazione già visitata</a>
+            {% elif False %}
+                <a class="btn btn-secondary disabled">Prenotazione in attesa</a>
+            {% else %}
+                <a href="/advertisement/{{ad.id}}/visit" class="btn btn-secondary">Prenota una visita</a>
+            {% endif %}
         </div>
     </section>
     
@@ -46,9 +55,5 @@
         <br>
         {{ad.description }}
     </p>
-
-    <!-- if available && if landlord_username !== current_user.username: show button, otherwise show disabled button -->
-    <!-- if renter is awaiting visit confirmation disable button -->
-    <!-- if not logged in disable -->
 </article>
 {% endblock %}

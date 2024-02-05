@@ -44,6 +44,21 @@ def get_advertisement(id):
 
         return redirect(url_for('get_home'))
 
+@app.route('/advertisement/<int:id>/visit')
+@login_required
+def get_visit(id):
+    try:
+        advertisement = ads.get_ad_by_id(id=id)
+        if advertisement == None:
+            raise NotFound('Nessun annuncio corrispondente trovato')
+        # TODO: fetch existing visits
+        # TODO: if current_user.username == landlord.username redirect to personal
+
+        return render_template('visit.html', ad=advertisement)
+    except HTTPException as e:
+        flash(str(e))
+
+        return redirect(url_for('get_home'))
 
 @app.route('/about')
 def get_about():
