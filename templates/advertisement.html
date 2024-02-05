@@ -4,22 +4,51 @@
 {% block content %}
 
 <article class="container w-50 my-4">
-    <img src="{{ url_for('static', filename='images/'+ad.images[0]) }}" alt="Immagine della casa" class="w-25 mx-auto">
-    <br>
-    <i>{{ad.adress}}</i>
-    <ul>
-        <li>Stanze: {{ad.rooms}}</li>
-        <li>{{ad.type}}</li>
-        <li>{{ad.furniture}}</li>
-    </ul>
-    <h2>{{ ad.title }}</h2>
-    <h4>{{ ad.rent }}</h4>
-    <p>Affittata da: {{ad.landlord_name}}</p>
-    <span>Descizione:</span>
-    <p>{{ad.description }}</p>
+    <header class="row">
+        <div class="col-md-9">
+           <h2>{{ ad.title }}</h2>
+           <h5>{{ ad.type }} {{ ad.furniture }} in {{ ad.adress }} - {{ad.rooms}} locali</h5>
+        </div>
+        <div class="col-md-3 text-right mt-auto">
+           <h3>{{ ad.rent }} €/mese</h3>
+        </div>
+    </header>
 
+    <section class="custom-carousel">
+        {% for image in ad.images %}
+            <div id="ad-image-{{loop.index}}" class="custom-carousel-item w-100">
+                <img src="{{ url_for('static', filename='images/'+image) }}" alt="Immagine della" class="w-100">
+            </div>
+        {% endfor %}
+    </section>
+    {% if ad.images|length > 1 %}
+        <section class="d-flex justify-content-center pt-1 pb-2 gap-2">
+            {% for image in ad.images %}
+                <a href="#ad-image-{{loop.index}}" class="btn btn-sm btn-light">{{loop.index}}</a>
+            {% endfor %}
+        </section>
+    {% endif %}
+   
+    <section class="row">
+        <div class="col-md-9">
+            <p><strong class="fw-semibold">Locatore:</strong> {{ad.landlord_name}}</p>
+        </div>
+        <div class="col-md-3 d-flex flex-column justify-content-end">
+            <a href="{{ad.id}}/visit" class="btn btn-secondary">Prenota una visita</a>
+                <small class="mt-1 mb-0 lh-sm">
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                </small>
+        </div>
+    </section>
+    
+    <p class="mb-3">
+        <strong class="fw-semibold"> Descrizione:</strong>
+        <br>
+        {{ad.description }}
+    </p>
 
     <!-- if available && if landlord_username !== current_user.username: show button, otherwise show disabled button -->
     <!-- if renter is awaiting visit confirmation disable button -->
+    <!-- if not logged in disable -->
 </article>
 {% endblock %}

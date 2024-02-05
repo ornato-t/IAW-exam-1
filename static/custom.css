@@ -72,3 +72,22 @@ main {
     margin-left: auto;
     place-self: end;
 }
+
+/* ADVERTISEMENT PAGE */
+
+.custom-carousel {
+    display: inline-flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+
+    max-height: 50vh;
+}
+
+.custom-carousel-item {
+	box-sizing: content-box;
+	display: flex;
+	flex: none;
+	scroll-snap-align: start;
+}
