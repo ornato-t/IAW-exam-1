@@ -28,7 +28,7 @@ def get_visits_next_week(advertisement_id):
 
     for row in rows:
         ad = dict(row)
-        date_obj = datetime.strptime(ad['date'], '%Y-%m-%d')
+        date_obj = datetime.strptime(ad['date'], '%Y-%m-%d %H:%M:%S')
         ad['date'] = date_obj.strftime('%d/%m/%Y')
 
         for day in slots:
@@ -94,8 +94,25 @@ def is_user_waiting_visit(username, advertisement_id):
     return False
 
 def insert_visit(username, advertisement_id, date, time, virtual):
-    print(username, advertisement_id, date, time, virtual)
-    return True
+    try:
+        conn = sqlite3.connect('database/database.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        sql = 'INSERT INTO VISIT(date, time, visitor_username, ADVERTISEMENT_id, virtual, status) VALUES(?, ?, ?, ?, ?, ?)'
+
+        cursor.execute(sql, (date, time, username, advertisement_id, virtual, 'pending'))
+        conn.commit()
+
+        return True
+    except Exception as e:
+        print('ERROR', str(e))
+        conn.rollback()
+        
+        return False
+    finally:
+        cursor.close()
+        conn.close()
 
 # HELPER FUNCTIONS
 
