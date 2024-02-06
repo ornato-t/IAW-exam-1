@@ -2,8 +2,9 @@ import uuid
 import re
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, NotFound, Forbidden
+from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, NotFound, Forbidden, InternalServerError
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 import ads
 import visits
@@ -42,9 +43,14 @@ def get_advertisement(id):
         if not advertisement['available'] and (not current_user.is_authenticated or advertisement['landlord_username'] != current_user.username):
             raise NotFound('Nessun annuncio corrispondente trovato')    # Using 404 rather than 401 for security reasons: avoid leaking info on hidden houses
 
-        # TODO: check here user has already visited; implement new function: user is awaiting confirmation
+        already_seen = False
+        pending_visit = False
 
-        return render_template('advertisement.html', ad=advertisement)
+        if current_user.is_authenticated:
+            already_seen = visits.has_user_visited(username=current_user.username, advertisement_id=id)
+            pending_visit = visits.is_user_waiting_visit(username=current_user.username, advertisement_id=id)
+
+        return render_template('advertisement.html', ad=advertisement, seen=already_seen, pending=pending_visit)
     except HTTPException as e:
         flash(str(e))
 
@@ -60,8 +66,12 @@ def get_visit(id):
 
         if visits.has_user_visited(username=current_user.username, advertisement_id=id):
             raise Forbidden('Non è possibile visitare più volte la stessa casa')
+        
+        if visits.is_user_waiting_visit(username=current_user.username, advertisement_id=id):
+            raise Forbidden('Hai già prenotato una visita a questa casa. Attendi la conferma')
 
-        # TODO: if current_user.username == landlord.username redirect to personal
+        if current_user.username == advertisement['landlord_username']:
+            raise Forbidden('Non puoi visitare una casa da te inserzionata')
 
         visit_list = visits.get_visits_next_week(advertisement_id=id)
 
@@ -75,11 +85,46 @@ def get_visit(id):
 @login_required 
 def post_visit(id):
     try:
+        # Check if url is correct and user permissions
+        advertisement = ads.get_ad_by_id(id=id)
+        if advertisement == None:
+            raise NotFound('Nessun annuncio corrispondente trovato')
+
+        if visits.has_user_visited(username=current_user.username, advertisement_id=id):
+            raise Forbidden('Non è possibile visitare più volte la stessa casa')
+        
+        if visits.is_user_waiting_visit(username=current_user.username, advertisement_id=id):
+            raise Forbidden('Hai già prenotato una visita a questa casa. Attendi la conferma')
+
+        if current_user.username == advertisement['landlord_username']:
+            raise Forbidden('Non puoi visitare una casa da te inserzionata')
+
         req = request.form.to_dict()
 
-    except:
-        pass
-    return redirect(url_for('get_home'))
+        # Check if form is valid
+        if not re.match(r'\d{2}\/\d{2}\/\d{4}@\d', req['visit']):
+            raise BadRequest("Badly formatted visit timestamp")
+        if req['type'] not in ['physical', 'virtual']:
+            raise BadRequest("Badly formatted visit type")
+
+        # Parse form data
+        visit_date_time = req['visit'].split('@')
+        visit_date = datetime.strptime(visit_date_time[0], '%d/%m/%Y')
+        visit_time = int(visit_date_time[1])
+
+        visit_virtual = False
+        if req['type'] == 'virtual':
+            visit_virtual = True
+
+        # Insert the visit in the database
+        if not visits.insert_visit(username=current_user.username, advertisement_id=id, date=visit_date, time=visit_time, virtual=visit_virtual):
+            raise InternalServerError('Errore durante l\'aggiunta della visita. Riprova più tardi')
+
+        return redirect(url_for('get_personal'))
+    except HTTPException as e:
+        flash(str(e))
+
+        return redirect(url_for('get_home'))
 
 @app.route('/about')
 def get_about():

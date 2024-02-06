@@ -45,10 +45,9 @@
                 <a class="btn btn-secondary disabled">Effettua il login per prenotare una visita</a>
             {% elif current_user.username == ad.landlord_username %}
                 <a href="/personal" class="btn btn-secondary">Controlla le prenotazioni</a>
-            {% elif False %}
-                <!-- TODO: check reservations and return two booleans if current user 1. is yet to visit, 2. has already visited -->
+            {% elif seen %}
                 <a class="btn btn-secondary disabled">Abitazione già visitata</a>
-            {% elif False %}
+            {% elif pending %}
                 <a class="btn btn-secondary disabled">Prenotazione in attesa</a>
             {% else %}
                 <a href="/advertisement/{{ad.id}}/visit" class="btn btn-secondary">Prenota una visita</a>

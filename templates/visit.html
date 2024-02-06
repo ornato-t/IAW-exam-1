@@ -27,7 +27,7 @@
                             {% if slot.available %}
                                 <option value="{{day.date}}@{{slot.pos}}">{{slot.time}}</option>
                             {% else %}
-                                <option value="{{day.date}}@{{slot.pos}}" disabled>{{slot.time}}</option>
+                                <option value="" disabled>{{slot.time}}</option>
                             {% endif %}
                         {% endfor %}
                     </optgroup>
