@@ -14,33 +14,57 @@
         </div>
     </header>
 
-    <form action="" class="mt-3">
-        <label for="visitSelect">Quando vuoi visitare la proprietà?</label>
-        <select id="visitSelect" name="visit" required onchange="updateDisplay()">
-            <option selected disabled>Scegli una fascia oraria</option>
-            {% for day in visit %}
-            <optgroup label="{{day.date}}">
-                {% for slot in day.slots %}
-                <option value="{{slot.date}}@{{slot.pos}}">{{slot.time}}</option>
-                {% endfor %}
-            </optgroup>
-            <hr />
-            {% endfor %}
-        </select>
+    <form method="post" class="mt-4">
+        <section class="row">
+            <div class="col-md-6">
+                <div><label for="visitSelect">Quando vuoi visitare la proprietà?</label></div>
     
-        <section>
-            Data della visita: <span id="visitSelectDate"><i>da scegliere</i></span>
-            <br>
-            Fascia oraria: <span id="visitSelectSlot"><i>da scegliere</i></span>
+                <select id="visitSelect" name="visit" required onchange="updateDisplay()">
+                    <option value="" selected disabled hidden>Scegli una fascia oraria</option>
+                    {% for day in visit %}
+                        <optgroup label="{{day.date}}">
+                            {% for slot in day.slots %}
+                        <option value="{{slot.date}}@{{slot.pos}}">{{slot.time}}</option>
+                        {% endfor %}
+                    </optgroup>
+                    <hr />
+                    {% endfor %}
+                </select>                            
+            </div>
+        
+            <div class="col-md-6 d-flex justify-content-end">
+                <div>
+                    <h5>Data della visita</h5>
+                    <span id="visitSelectDate"><i>da scegliere</i></span>
+     
+                    <h5>Fascia oraria</h5>
+                    <span id="visitSelectSlot"><i>da scegliere</i></span>
+                </div>
+            </div>
         </section>
+
+        <fieldset class="mb-3">
+            <legend class="col-form-label">Come vuoi visitare la proprietà?</legend>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="type" id="visitForm1" value="physical" checked>
+                <label class="form-check-label" for="visitForm1">Di persona</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="type" id="visitForm2" value="virtual">
+                <label class="form-check-label" for="visitForm2">Virtualmente</label>
+            </div>
+        </fieldset>
+
+        <input id="submitButton" type="submit" value="Prenota visita" class="btn btn-primary mt-5">
     </form>
 </article>
 {% endblock %}
 
 {% block inject %}
 <script>
+    // Update the "date" and "time slot" text elements on the page.
     function updateDisplay() {
-        const selectElement = document.getElementById('visitSelect');   //Target <select> tag
+        const selectElement = document.getElementById('visitSelect');   //Target <select>
         const selectedOption = selectElement.options[selectElement.selectedIndex];  // Extract selected option. Format: {value: 'DATE@INDEX'}
 
         const date = selectedOption.value.split('@')[0];    //Extract selected date
