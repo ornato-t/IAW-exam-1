@@ -38,6 +38,9 @@ def get_advertisement(id):
         if advertisement == None:
             raise NotFound('Nessun annuncio corrispondente trovato')
 
+        if not advertisement['available'] and (not current_user.is_authenticated or advertisement['landlord_username'] != current_user.username):
+            raise NotFound('Nessun annuncio corrispondente trovato')    # Using 404 rather than 401 for security reasons: avoid leaking info on hidden houses
+
         return render_template('advertisement.html', ad=advertisement)
     except HTTPException as e:
         flash(str(e))

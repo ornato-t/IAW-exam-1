@@ -4,6 +4,12 @@
 {% block content %}
 
 <article class="container w-50 my-4">
+    {% if not ad.available %}
+        <div class="alert alert-light" role="alert">
+            Questo annuncio è stato contrassegnato come <strong>non disponibile</strong>: solo tu puoi vederlo
+        </div>
+    {% endif %}
+      
     <header class="row">
         <div class="col-md-9">
            <h2>{{ ad.title }}</h2>
