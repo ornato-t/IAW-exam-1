@@ -2,7 +2,7 @@ import uuid
 import re
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, NotFound
+from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, NotFound, Forbidden
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import ads
@@ -42,6 +42,8 @@ def get_advertisement(id):
         if not advertisement['available'] and (not current_user.is_authenticated or advertisement['landlord_username'] != current_user.username):
             raise NotFound('Nessun annuncio corrispondente trovato')    # Using 404 rather than 401 for security reasons: avoid leaking info on hidden houses
 
+        # TODO: check here user has already visited; implement new function: user is awaiting confirmation
+
         return render_template('advertisement.html', ad=advertisement)
     except HTTPException as e:
         flash(str(e))
@@ -49,13 +51,16 @@ def get_advertisement(id):
         return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>/visit')
-# @login_required TODO
+@login_required 
 def get_visit(id):
     try:
         advertisement = ads.get_ad_by_id(id=id)
         if advertisement == None:
             raise NotFound('Nessun annuncio corrispondente trovato')
-        # TODO: fetch existing visits; if user has already visited or is awaiting confirmation redirect to home
+
+        if visits.has_user_visited(username=current_user.username, advertisement_id=id):
+            raise Forbidden('Non è possibile visitare più volte la stessa casa')
+
         # TODO: if current_user.username == landlord.username redirect to personal
 
         visit_list = visits.get_visits_next_week(advertisement_id=id)
@@ -67,7 +72,7 @@ def get_visit(id):
         return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>/visit', methods=['POST'])
-# @login_required TODO
+@login_required 
 def post_visit(id):
     try:
         req = request.form.to_dict()
@@ -122,7 +127,7 @@ def post_login():
         login_user(user, True)
 
         flash('Login completato con successo')
-        return redirect(url_for('get_personal'))
+        return redirect(url_for('get_home'))
 
     except HTTPException as e:
         flash(str(e))

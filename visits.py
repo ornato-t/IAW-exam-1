@@ -39,6 +39,34 @@ def get_visits_next_week(advertisement_id):
 
     return slots
 
+def has_user_visited(username, advertisement_id):
+    """
+    Checks if a user has already visited a house
+
+    :returns: True if the user has already visited the house, False otherwise
+    """
+    conn = sqlite3.connect('database/database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    sql = """
+        SELECT COUNT (*) as visits
+        FROM VISIT
+        WHERE ADVERTISEMENT_id = ? AND visitor_username = ?;
+    """
+    cursor.execute(sql, (advertisement_id, username))
+    res = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    res = dict(res)
+    if res['visits'] > 0:
+        return True
+
+    return False
+
+
 
 
 def get_time_slots():
