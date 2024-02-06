@@ -37,8 +37,8 @@ def get_home():
         advertisements = ads.get_public_ads(sort_price)
 
         return render_template('home.html', advertisements=advertisements, sort_price=sort_price)
-    except HTTPException as e:
-        flash(str(e))
+    except Exception as e:
+        flash(str(e), 'danger')
 
         return redirect(url_for('get_home'))
 
@@ -61,8 +61,10 @@ def get_advertisement(id):
 
         return render_template('advertisement.html', ad=advertisement, seen=already_seen, pending=pending_visit)
     except HTTPException as e:
-        flash(str(e))
-
+        flash(str(e), 'warning')
+        return redirect(url_for('get_home'))
+    except Exception as e:
+        flash(str(e), 'danger')
         return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>/visit')
@@ -86,8 +88,10 @@ def get_visit(id):
 
         return render_template('visit.html', ad=advertisement, visit=visit_list)
     except HTTPException as e:
-        flash(str(e))
-
+        flash(str(e), 'warning')
+        return redirect(url_for('get_home'))
+    except Exception as e:
+        flash(str(e), 'danger')
         return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>/visit', methods=['POST'])
@@ -112,9 +116,9 @@ def post_visit(id):
 
         # Check if form is valid
         if not re.match(r'\d{2}\/\d{2}\/\d{4}@\d', req['visit']):
-            raise BadRequest("Badly formatted visit timestamp")
+            raise BadRequest("Errore di formattazione nel campo 'visit'")
         if req['type'] not in ['physical', 'virtual']:
-            raise BadRequest("Badly formatted visit type")
+            raise BadRequest("Errore di formattazione nel campo 'type'")
 
         # Parse form data
         visit_date_time = req['visit'].split('@')
@@ -131,8 +135,10 @@ def post_visit(id):
 
         return redirect(url_for('get_personal'))
     except HTTPException as e:
-        flash(str(e))
-
+        flash(str(e), 'warning')
+        return redirect(url_for('get_home'))
+    except Exception as e:
+        flash(str(e), 'danger')
         return redirect(url_for('get_home'))
 
 @app.route('/about')
@@ -154,12 +160,11 @@ def post_signup():
         if not user_db.add_user(user):  # Returns False if an error occurred
             raise BadRequest("Errore durante la creazione dell'account.")
 
-        flash('Account creato con successo. Puoi procedere al login.')
+        flash('Account creato con successo. Puoi procedere al login.', 'success')
         return redirect(url_for('get_login'))
 
     except HTTPException as e:
-        flash(str(e))
-
+        flash(str(e), 'danger')
         return redirect(url_for('get_signup'))
 
 @app.route('/login')
@@ -180,12 +185,11 @@ def post_login():
         user = User(username=db_user['username'], email=db_user['email'], landlord=db_user['landlord'], name=db_user['name'], password=db_user['password'])
         login_user(user, True)
 
-        flash('Login completato con successo')
+        flash('Login completato con successo', 'success')
         return redirect(url_for('get_home'))
 
     except HTTPException as e:
-        flash(str(e))
-
+        flash(str(e), 'danger')
         return redirect(url_for('get_login'))
 
 @app.route('/personal')
@@ -215,15 +219,15 @@ def validate_signup(user):
     client_types = ["client", "landlord"]
 
     if not re.match(username_regex, user['username']):
-        raise BadRequest("Invalid username")
+        raise BadRequest("Username non valido")
     if not re.match(email_regex, user['email']):
-        raise BadRequest("Invalid email")
+        raise BadRequest("Email non valida")
     if not re.match(name_regex, user['name']):
-        raise BadRequest("Invalid name")
+        raise BadRequest("Nome non valido")
     if not re.match(password_regex, user['password']):
-        raise BadRequest("Invalid password")
+        raise BadRequest("Password non valida")
     if user['client_type'] not in client_types:
-        raise BadRequest("Invalid client type")
+        raise BadRequest("Tipologia di cliente non valida")
 
 def validate_login(user):
     """
@@ -236,6 +240,6 @@ def validate_login(user):
     password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$'
 
     if not re.match(username_regex, user['username']):
-        raise BadRequest("Invalid username")
+        raise BadRequest("Username non valido")
     if not re.match(password_regex, user['password']):
-        raise BadRequest("Invalid password")
+        raise BadRequest("Password non valida")
