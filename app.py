@@ -58,13 +58,23 @@ def get_visit(id):
         # TODO: fetch existing visits; if user has already visited or is awaiting confirmation redirect to home
         # TODO: if current_user.username == landlord.username redirect to personal
 
-        visit_list = visits.get_visits_next_week(current_user=current_user)
+        visit_list = visits.get_visits_next_week(advertisement_id=id)
 
         return render_template('visit.html', ad=advertisement, visit=visit_list)
     except HTTPException as e:
         flash(str(e))
 
         return redirect(url_for('get_home'))
+
+@app.route('/advertisement/<int:id>/visit', methods=['POST'])
+# @login_required TODO
+def post_visit(id):
+    try:
+        req = request.form.to_dict()
+
+    except:
+        pass
+    return redirect(url_for('get_home'))
 
 @app.route('/about')
 def get_about():

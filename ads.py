@@ -11,7 +11,7 @@ def get_public_ads(sort_price):
     conn = sqlite3.connect('database/database.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    #TODO: ensure that all of these information are needed, in particular landlord's
+
     cursor.execute("""
         SELECT A.id, A.adress, A.title, A.rooms, A.type, A.description, A.rent, A.furniture, P.name as landlord_name, P.username as landlord_username, PI.path as image
         FROM ADVERTISEMENT A

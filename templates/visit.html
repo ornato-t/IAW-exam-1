@@ -23,8 +23,12 @@
                     <option value="" selected disabled hidden>Scegli una fascia oraria</option>
                     {% for day in visit %}
                         <optgroup label="{{day.date}}">
-                            {% for slot in day.slots %}
-                        <option value="{{slot.date}}@{{slot.pos}}">{{slot.time}}</option>
+                        {% for slot in day.slots %}
+                            {% if slot.available %}
+                                <option value="{{day.date}}@{{slot.pos}}">{{slot.time}}</option>
+                            {% else %}
+                                <option value="{{day.date}}@{{slot.pos}}" disabled>{{slot.time}}</option>
+                            {% endif %}
                         {% endfor %}
                     </optgroup>
                     <hr />
