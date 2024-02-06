@@ -5,4 +5,3 @@
       - same layout for apartments
       - list (no card) layout for requests
   - client vies their request firsts, then their visits
-- Style reservation page
