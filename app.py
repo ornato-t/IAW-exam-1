@@ -6,6 +6,7 @@ from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, NotFoun
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import ads
+import visits
 import user_db
 from models import User
 
@@ -48,16 +49,18 @@ def get_advertisement(id):
         return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>/visit')
-@login_required
+# @login_required TODO
 def get_visit(id):
     try:
         advertisement = ads.get_ad_by_id(id=id)
         if advertisement == None:
             raise NotFound('Nessun annuncio corrispondente trovato')
-        # TODO: fetch existing visits
+        # TODO: fetch existing visits; if user has already visited or is awaiting confirmation redirect to home
         # TODO: if current_user.username == landlord.username redirect to personal
 
-        return render_template('visit.html', ad=advertisement)
+        visit_list = visits.get_visits_next_week(current_user=current_user)
+
+        return render_template('visit.html', ad=advertisement, visit=visit_list)
     except HTTPException as e:
         flash(str(e))
 
