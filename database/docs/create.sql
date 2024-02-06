@@ -1,13 +1,5 @@
 BEGIN TRANSACTION;
 
-CREATE TABLE VISIT (
-    date DATE NOT NULL,
-    time INTEGER CHECK(time IN (1, 2, 3, 4)),
-    virtual BOOLEAN NOT NULL,
-    status TEXT CHECK(status IN ('pending', 'accepted', 'rejected')),
-    refusal_reason TEXT,
-    PRIMARY KEY (date, time)
-);
 CREATE TABLE PERSON (
     username TEXT NOT NULL,
     email TEXT NOT NULL,
@@ -35,14 +27,15 @@ CREATE TABLE ADVERTISEMENT (
     landlord_username TEXT NOT NULL,
     FOREIGN KEY (landlord_username) REFERENCES PERSON(username)
 );
-CREATE TABLE PERSON_VISITS (
-    VISIT_date DATE NOT NULL,
-    VISIT_time INTEGER NOT NULL,
+CREATE TABLE VISIT (
+    date DATE NOT NULL,
+    time INTEGER CHECK(time IN (0, 1, 2, 3)),
     visitor_username TEXT NOT NULL,
     ADVERTISEMENT_id INTEGER NOT NULL,
-    PRIMARY KEY (VISIT_date, VISIT_time, visitor_username, ADVERTISEMENT_id),
-    FOREIGN KEY (VISIT_date) REFERENCES VISIT(date),
-    FOREIGN KEY (VISIT_time) REFERENCES VISIT(time),
+    virtual BOOLEAN NOT NULL,
+    status TEXT CHECK(status IN ('pending', 'accepted', 'rejected')),
+    refusal_reason TEXT,
+    PRIMARY KEY (date, time, visitor_username, ADVERTISEMENT_id),
     FOREIGN KEY (visitor_username) REFERENCES PERSON(username),
     FOREIGN KEY (ADVERTISEMENT_id) REFERENCES ADVERTISEMENT(id)
 );
