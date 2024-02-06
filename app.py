@@ -30,8 +30,17 @@ def login(username):
 
 @app.route('/')
 def get_home():
-    advertisements = ads.get_public_ads(sort_price=True)    # TODO: set sort_price via http parameter; add try..except
-    return render_template('home.html', advertisements=advertisements)
+    try:
+        sort_price_str = request.args.get('sort_price', default='true', type=str)
+        sort_price = sort_price_str.lower() == 'true'
+
+        advertisements = ads.get_public_ads(sort_price)
+
+        return render_template('home.html', advertisements=advertisements, sort_price=sort_price)
+    except HTTPException as e:
+        flash(str(e))
+
+        return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>')
 def get_advertisement(id):

@@ -93,7 +93,7 @@ def get_rooms(num):
     if num > 5:
         return '5+'
     else:
-        return num
+        return str(num)
 
 def get_type(house_type):
     """

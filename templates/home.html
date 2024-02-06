@@ -3,7 +3,6 @@
 {% set title = 'home' %}
 
 {% block content %}
-
     <header class="hero bg-secondary-subtle text-content-secondary">
         <h1 class="fs-1">
             renTO
@@ -14,6 +13,20 @@
     </header>
 
     <section class="adverts bg-secondary">
+        <nav class="ad-sort">
+            {% if sort_price %}
+                <a href="{{ url_for('get_home', sort_price='false') }}" class="btn btn-primary">
+                    <i class='bx bx-sort-down'></i>
+                    Ordina per numero di locali
+                </a>
+            {% else %}
+                <a href="{{ url_for('get_home', sort_price='true') }}" class="btn btn-primary">
+                    <i class='bx bx-sort-up'></i>
+                    Ordina per prezzo
+                </a>
+            {% endif %}
+        </nav>
+
         {% for ad in advertisements %}
             <article class="card ad-card">
                 <img src="/static/images/{{ad.image}}" class="card-img-top" alt="{{ad.title}}">
@@ -30,5 +43,4 @@
             </article>
         {% endfor %}
     </section>
-
 {% endblock %}
