@@ -141,8 +141,6 @@ def get_user_visits(username):
 
     :returns: A list of visit reservations
     """
-    slots = get_time_slots()
-
     conn = sqlite3.connect('database/database.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -154,8 +152,7 @@ def get_user_visits(username):
         FROM VISIT V
         INNER JOIN ADVERTISEMENT A ON A.id = V.ADVERTISEMENT_id
 		INNER JOIN PERSON PE ON A.landlord_username = PE.username
-        WHERE V.visitor_username = ?
-        GROUP BY A.ID;
+        WHERE V.visitor_username = ?;
     """
     cursor.execute(sql, (username,))
     rows = cursor.fetchall()
@@ -175,7 +172,8 @@ def get_user_visits(username):
         res['ad_type'] = ads.get_type(res['ad_type'])
 
         results.append(res)
-    
+
+    results.reverse()   # Reverse to make the most recent visits appear fist
     return results
 
 def get_landlord_visits(username):
@@ -184,8 +182,6 @@ def get_landlord_visits(username):
 
     :returns: A list of visit reservations
     """
-    slots = get_time_slots()
-
     conn = sqlite3.connect('database/database.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -193,12 +189,11 @@ def get_landlord_visits(username):
     sql = """
         SELECT V.date, V.time, V.virtual, V.status, V.refusal_reason, 
             A.id as ad_id, A.title as ad_title, A.adress as ad_adress, A.type as ad_type, A.furniture as ad_furniture, A.rooms as ad_rooms, 
-			PE.name as user_name
+			PE.name as visitor_name, PE.username as visitor_username
         FROM VISIT V
         INNER JOIN ADVERTISEMENT A ON A.id = V.ADVERTISEMENT_id
 		INNER JOIN PERSON PE ON V.visitor_username = PE.username
-        WHERE A.landlord_username = ?
-        GROUP BY A.ID;
+        WHERE A.landlord_username = ?;
     """
     cursor.execute(sql, (username,))
     rows = cursor.fetchall()
@@ -219,6 +214,7 @@ def get_landlord_visits(username):
 
         results.append(res)
     
+    results.reverse()   # Reverse to make the most recent visits appear fist
     return results
 # HELPER FUNCTIONS
 

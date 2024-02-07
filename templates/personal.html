@@ -6,14 +6,84 @@
 <article class="container w-75 my-4">
     {% if current_user.landlord %}
         <h4>Richieste di visita alle tue proprietà</h4>
-        {{landlord_visits}}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Stato</th>
+                    <th scope="col">Annuncio</th>
+                    <th scope="col">Indirizzo</th>
+                    <th scope="col">Dettagli</th>
+                    <th scope="col">Data e ora</th>
+                    <th scope="col">Modalità</th>
+                    <th scope="col">Cliente</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for visit in landlord_visits %}
+                    <tr class="{{ 'borderless-upper-row' if visit.status == 'pending' else '' }}">
+                        <td class="d-flex align-items-center">
+                            {% if visit.status == 'accepted' %}
+                                <i class='bx bx-check-circle fs-2 text-success'></i>
+                                <span class="ms-2 text-success">Accettata</span>
+                            {% elif visit.status == 'pending' %}
+                                <i class='bx bx-time-five fs-2 text-warning'></i>
+                                <span class="ms-2 text-warning">Richiesta</span>
+                            {% elif visit.status == 'rejected' %}
+                                <i class='bx bx-error-circle fs-2 text-danger'></i>
+                                <span class="ms-2 text-danger">Rifiutata</span>
+                            {% endif %}
+                        </td>
+                        <td><a href="/advertisement/{{visit.ad_id}}">{{visit.ad_title}}</a></td>
+                        <td>{{visit.ad_adress}}</td>
+                        <td>{{visit.ad_type}} {{visit.ad_furniture}}, locali: {{visit.ad_rooms}}</td>
+                        <td>{{visit.date}} {{visit.time}}</td>
+                        <td>
+                            {% if visit.virtual %}
+                                Da remoto
+                            {% else %}
+                                Di persona
+                            {% endif %}
+                        </td>
+                        <td>{{visit.visitor_name}}</td>
+                    </tr>
+                    {% if visit.status == 'pending' %}
+                    <tr class="borderless-lower-row">
+                        <td colspan="7">
+                            <div class="d-flex align-items-center">
+                                <!-- Accept visit form -->
+                                <form action="acceptVisit" method="post" class="me-3">
+                                    <input type="hidden" name="date" value="{{visit.date}}">
+                                    <input type="hidden" name="time" value="{{visit.time}}">
+                                    <input type="hidden" name="advertisement" value="{{visit.ad_id}}">
+                                    <input type="hidden" name="visitor" value="{{visit.visitor_username}}">
+                                    <button type="submit" class="btn btn-outline-success landlord-form-button">Accetta visita</button>
+                                </form>
+                                
+                                <!-- Reject visit form -->
+                                <form action="rejectVisit" method="post" class="d-flex align-items-center gap-2">
+                                    <input type="hidden" name="date" value="{{visit.date}}">
+                                    <input type="hidden" name="time" value="{{visit.time}}">
+                                    <input type="hidden" name="advertisement" value="{{visit.ad_id}}">
+                                    <input type="hidden" name="visitor" value="{{visit.visitor_username}}">
+                                    
+                                    <button type="submit" class="btn btn-outline-danger landlord-form-button">Rifiuta visita</button>
+                                    
+                                    <input type="text" name="reason" class="form-control landlord-form-text" required pattern="\w+" autocomplete="off" placeholder="Motiva il rifiuto">
+                                </form>
+                            </div>
+                        </td>
+                    </tr>                                
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
 
         <h4>Le tue proprietà</h4>
         <section class="landlord-adverts">
             {% for ad in landlord_ads %}
-            <!-- TODO: mark unavailable -->
-                <article class="card landlord-ad-card">
+                <article class="card landlord-ad-card {{ 'bg-light' if not ad.available else '' }}">
                     <img src="/static/images/{{ad.image}}" class="card-img-top" alt="{{ad.title}}">
+                    <span class="card-text font-monospace opacity-50 mx-auto">{{ 'Non visibile' if not ad.available else '' }}</span>
                     <div class="card-body ad-body">
                         <h6 class="card-text text-dark mb-0">{{ad.title}}</h6>
                         <span class="card-text font-monospace">{{ad.adress}}</span>
@@ -37,7 +107,7 @@
     {% endif %}
 
     <h4>Le tue richieste di visita</h4>
-    <table class="table table-striped">
+    <table class="table">
         <thead>
             <tr>
                 <th scope="col">Stato</th>
@@ -45,12 +115,13 @@
                 <th scope="col">Indirizzo</th>
                 <th scope="col">Dettagli</th>
                 <th scope="col">Data e ora</th>
+                <th scope="col">Modalità</th>
                 <th scope="col">Locatore</th>
             </tr>
         </thead>
         <tbody>
             {% for visit in user_visits %}
-                <tr>
+                <tr class="{{ 'borderless-upper-row' if visit.status == 'rejected' else '' }}">
                     <td class="d-flex align-items-center">
                         {% if visit.status == 'accepted' %}
                             <i class='bx bx-check-circle fs-2 text-success'></i>
@@ -67,12 +138,20 @@
                     <td>{{visit.ad_adress}}</td>
                     <td>{{visit.ad_type}} {{visit.ad_furniture}}, locali: {{visit.ad_rooms}}</td>
                     <td>{{visit.date}} {{visit.time}}</td>
+                    <td>
+                        {% if visit.virtual %}
+                            Da remoto
+                        {% else %}
+                            Di persona
+                        {% endif %}
+                    </td>
                     <td>{{visit.landlord_name}}</td>
                 </tr>
                 {% if visit.status == 'rejected' %}
-                    <tr>
-                        <td colspan="6" class="text-danger">
-                            {{visit.landlord_name}} ha rifiutato la tua visita con il seguente messaggio: "{{visit.refusal_reason}}"
+                    <tr class="borderless-lower-row">
+                        <td colspan="7">
+                            <strong>{{visit.landlord_name}}</strong>
+                            ha rifiutato la tua visita con il seguente messaggio: <span class="text-danger">{{visit.refusal_reason}}</span>
                         </td>
                     </tr>
                 {% endif %}
@@ -81,4 +160,3 @@
     </table>
 </article>
 {% endblock %}
-<!-- TODO: remove image -->

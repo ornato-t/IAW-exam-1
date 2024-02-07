@@ -125,3 +125,19 @@ main {
 .edit-ad-button {
     place-self: start;
 }
+
+.borderless-upper-row {
+    border-bottom: transparent;
+}
+
+.borderless-lower-row {
+    border-top: transparent;
+}
+
+.landlord-form-button{
+    width: 10rem;
+}
+
+.landlord-form-text{
+    width: 26rem;
+}
