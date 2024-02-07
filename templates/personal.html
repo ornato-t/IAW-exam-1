@@ -11,6 +11,7 @@
         <h4>Le tue proprietà</h4>
         <section class="landlord-adverts">
             {% for ad in landlord_ads %}
+            <!-- TODO: mark unavailable -->
                 <article class="card landlord-ad-card">
                     <img src="/static/images/{{ad.image}}" class="card-img-top" alt="{{ad.title}}">
                     <div class="card-body ad-body">
@@ -36,6 +37,48 @@
     {% endif %}
 
     <h4>Le tue richieste di visita</h4>
-    {{user_visits}}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Stato</th>
+                <th scope="col">Annuncio</th>
+                <th scope="col">Indirizzo</th>
+                <th scope="col">Dettagli</th>
+                <th scope="col">Data e ora</th>
+                <th scope="col">Locatore</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for visit in user_visits %}
+                <tr>
+                    <td class="d-flex align-items-center">
+                        {% if visit.status == 'accepted' %}
+                            <i class='bx bx-check-circle fs-2 text-success'></i>
+                            <span class="ms-2 text-success">Accettata</span>
+                        {% elif visit.status == 'pending' %}
+                            <i class='bx bx-time-five fs-2 text-warning'></i>
+                            <span class="ms-2 text-warning">Richiesta</span>
+                        {% elif visit.status == 'rejected' %}
+                            <i class='bx bx-error-circle fs-2 text-danger'></i>
+                            <span class="ms-2 text-danger">Rifiutata</span>
+                        {% endif %}
+                    </td>
+                    <td><a href="/advertisement/{{visit.ad_id}}">{{visit.ad_title}}</a></td>
+                    <td>{{visit.ad_adress}}</td>
+                    <td>{{visit.ad_type}} {{visit.ad_furniture}}, locali: {{visit.ad_rooms}}</td>
+                    <td>{{visit.date}} {{visit.time}}</td>
+                    <td>{{visit.landlord_name}}</td>
+                </tr>
+                {% if visit.status == 'rejected' %}
+                    <tr>
+                        <td colspan="6" class="text-danger">
+                            {{visit.landlord_name}} ha rifiutato la tua visita con il seguente messaggio: "{{visit.refusal_reason}}"
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
 </article>
 {% endblock %}
+<!-- TODO: remove image -->

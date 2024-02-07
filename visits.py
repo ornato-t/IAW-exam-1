@@ -149,12 +149,10 @@ def get_user_visits(username):
 
     sql = """
         SELECT V.date, V.time, V.virtual, V.status, V.refusal_reason, 
-            A.title as ad_title, A.adress as ad_adress, A.type as ad_type, A.furniture as ad_furniture, A.rooms as ad_rooms, 
-            P.path AS ad_image,
+            A.id as ad_id, A.title as ad_title, A.adress as ad_adress, A.type as ad_type, A.furniture as ad_furniture, A.rooms as ad_rooms, 
 			PE.name as landlord_name
         FROM VISIT V
         INNER JOIN ADVERTISEMENT A ON A.id = V.ADVERTISEMENT_id
-        INNER JOIN PICTURES P ON P.ADVERTISEMENT_id = A.id
 		INNER JOIN PERSON PE ON A.landlord_username = PE.username
         WHERE V.visitor_username = ?
         GROUP BY A.ID;
@@ -194,12 +192,10 @@ def get_landlord_visits(username):
 
     sql = """
         SELECT V.date, V.time, V.virtual, V.status, V.refusal_reason, 
-            A.title as ad_title, A.adress as ad_adress, A.type as ad_type, A.furniture as ad_furniture, A.rooms as ad_rooms, 
-            P.path AS ad_image,
+            A.id as ad_id, A.title as ad_title, A.adress as ad_adress, A.type as ad_type, A.furniture as ad_furniture, A.rooms as ad_rooms, 
 			PE.name as user_name
         FROM VISIT V
         INNER JOIN ADVERTISEMENT A ON A.id = V.ADVERTISEMENT_id
-        INNER JOIN PICTURES P ON P.ADVERTISEMENT_id = A.id
 		INNER JOIN PERSON PE ON V.visitor_username = PE.username
         WHERE A.landlord_username = ?
         GROUP BY A.ID;
