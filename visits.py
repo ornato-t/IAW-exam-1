@@ -11,7 +11,7 @@ class Slot(Enum):
     FOURTH = '17-20'
 
     @staticmethod
-    def parse(num):
+    def parse_db(num):
         match num:
             case 0:
                 return Slot.FIRST.value
@@ -21,7 +21,20 @@ class Slot(Enum):
                 return Slot.THIRD.value
             case 3:
                 return Slot.FOURTH.value
-            case 4:
+            case _:
+                raise Exception('Unexpected time slot formatting')
+    @staticmethod
+    def parse_str(str):
+        match str:
+            case Slot.FIRST.value:
+                return 0
+            case Slot.SECOND.value:
+                return 1
+            case Slot.THIRD.value:
+                return 2
+            case Slot.FOURTH.value:
+                return 3
+            case _:
                 raise Exception('Unexpected time slot formatting')
 
 def get_visits_next_week(advertisement_id):
@@ -165,7 +178,7 @@ def get_user_visits(username):
         res = dict(row)
         date_obj = datetime.strptime(res['date'], '%Y-%m-%d %H:%M:%S')
         res['date'] = date_obj.strftime('%d/%m/%Y')
-        res['time'] = Slot.parse(res['time'])
+        res['time'] = Slot.parse_db(res['time'])
         res['virtual'] = res['virtual'] == True
         res['ad_rooms'] = ads.get_rooms(res['ad_rooms'])
         res['ad_furniture'] = ads.get_furniture(res['ad_furniture'], res['ad_type'])
@@ -206,7 +219,7 @@ def get_landlord_visits(username):
         res = dict(row)
         date_obj = datetime.strptime(res['date'], '%Y-%m-%d %H:%M:%S')
         res['date'] = date_obj.strftime('%d/%m/%Y')
-        res['time'] = Slot.parse(res['time'])
+        res['time'] = Slot.parse_db(res['time'])
         res['virtual'] = res['virtual'] == True
         res['ad_rooms'] = ads.get_rooms(res['ad_rooms'])
         res['ad_furniture'] = ads.get_furniture(res['ad_furniture'], res['ad_type'])
@@ -218,12 +231,84 @@ def get_landlord_visits(username):
     return results
 
 def accept_visit(landlord_username, visitor_username, advertisement_id, date, time):
-    print('ACCEPT:', landlord_username, visitor_username, advertisement_id, date, time) # TODO
-    return True
+    try:
+        # Parse date and times
+        date_obj = datetime.strptime(date, '%d/%m/%Y')
+        date_parsed = date_obj.strftime('%Y-%m-%d %H:%M:%S')
+        time_parsed = Slot.parse_str(time)
+
+        conn = sqlite3.connect('database/database.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        sql = """
+            UPDATE VISIT
+            SET status = 'accepted'
+            WHERE EXISTS (
+                SELECT 1
+                FROM ADVERTISEMENT
+                WHERE ADVERTISEMENT.id = VISIT.ADVERTISEMENT_id
+                AND ADVERTISEMENT.landlord_username = ?
+            )
+            AND ADVERTISEMENT_id = ?
+            AND visitor_username = ?
+            AND date = ?
+            AND time = ?
+            AND status = 'pending';
+        """
+
+        cursor.execute(sql, (landlord_username, advertisement_id, visitor_username, date_parsed, time_parsed))
+        conn.commit()
+
+        return True
+    except Exception as e:
+        print('ERROR', str(e))
+        conn.rollback()
+        
+        return False
+    finally:
+        cursor.close()
+        conn.close()
 
 def reject_visit(landlord_username, visitor_username, advertisement_id, date, time, reject_reason):
-    print('REJECT:', landlord_username, visitor_username, advertisement_id, date, time, reject_reason) # TODO
-    return True
+    try:
+        # Parse date and times
+        date_obj = datetime.strptime(date, '%d/%m/%Y')
+        date_parsed = date_obj.strftime('%Y-%m-%d %H:%M:%S')
+        time_parsed = Slot.parse_str(time)
+
+        conn = sqlite3.connect('database/database.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        sql = """
+            UPDATE VISIT
+            SET status = 'rejected', refusal_reason = ?
+            WHERE EXISTS (
+                SELECT 1
+                FROM ADVERTISEMENT
+                WHERE ADVERTISEMENT.id = VISIT.ADVERTISEMENT_id
+                AND ADVERTISEMENT.landlord_username = ?
+            )
+            AND ADVERTISEMENT_id = ?
+            AND visitor_username = ?
+            AND date = ?
+            AND time = ?
+            AND status = 'pending';
+        """
+
+        cursor.execute(sql, (reject_reason, landlord_username, advertisement_id, visitor_username, date_parsed, time_parsed))
+        conn.commit()
+
+        return True
+    except Exception as e:
+        print('ERROR', str(e))
+        conn.rollback()
+        
+        return False
+    finally:
+        cursor.close()
+        conn.close()
 
 # HELPER FUNCTIONS
 
