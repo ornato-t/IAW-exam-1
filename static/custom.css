@@ -32,7 +32,7 @@ main {
 .hero {
     display: grid;
     place-items: center;
-    padding: 5rem 6rem 6rem 5rem;
+    padding: 6rem;
 }
 
 .adverts {
@@ -114,4 +114,14 @@ main {
 .landlord-ad-card {
     width: 18rem;
     max-height: 28rem;   /*Different max height*/
+}
+
+.new-ad-hero {
+    display: grid;
+    place-items: center;
+    padding: 7rem 2rem 7rem 2rem;
+}
+
+.edit-ad-button {
+    place-self: start;
 }

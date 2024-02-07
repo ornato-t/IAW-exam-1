@@ -18,12 +18,20 @@
                         <span class="card-text font-monospace">{{ad.adress}}</span>
                         <span class="card-text ad-description my-2">{{ad.description}}</span>
                         <div class="card-end">
+                            <a href="/advertisement/{{ad.id}}/edit" class="btn btn-outline-primary edit-ad-button">Modifica</a>
+                            <!-- TODO: create edit ad page -->
                             <a href="/advertisement/{{ad.id}}" class="btn btn-primary ad-button">Visualizza</a>
                         </div>
                     </div>
                 </article>
             {% endfor %}
-            <!-- TODO: add new house here -->
+            <a class="card landlord-ad-card btn btn-light" href="/advertisement/new">
+                <!-- TODO: create new ad page -->
+                <div class="card-body new-ad-hero">
+                    <i class='bx bx-add-to-queue bx-lg'></i>
+                    <p>Aggiungi un nuovo annuncio.</p>
+                </div>
+            </a>
         </section>
     {% endif %}
 
