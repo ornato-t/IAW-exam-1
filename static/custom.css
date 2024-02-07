@@ -63,7 +63,6 @@ main {
     justify-content: space-between;
 }
 
-
 .ad-description {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -98,4 +97,21 @@ main {
 	display: flex;
 	flex: none;
 	scroll-snap-align: start;
+}
+
+/* PERSONAL PAGE */
+/* These classes mimick the ones from the homepage */
+.landlord-adverts {
+    flex-grow: 1;
+    padding: 1.5rem 0 4rem 0;   /*Different side padding*/
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    place-items: center;
+    align-items: stretch;
+    row-gap: 2.5rem;
+}
+
+.landlord-ad-card {
+    width: 18rem;
+    max-height: 28rem;   /*Different max height*/
 }

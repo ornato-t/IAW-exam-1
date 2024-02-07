@@ -1,14 +1,30 @@
 {% extends "base.html" %}
 {% block title %}Pagina personale{% endblock %}
 {% set title = 'personale' %}
+
 {% block content %}
-<article class="container w-25 my-4">
+<article class="container w-75 my-4">
     {% if current_user.landlord %}
         <h4>Richieste di visita alle tue proprietà</h4>
         {{landlord_visits}}
 
         <h4>Le tue proprietà</h4>
-        {{landlord_ads}}
+        <section class="landlord-adverts">
+            {% for ad in landlord_ads %}
+                <article class="card landlord-ad-card">
+                    <img src="/static/images/{{ad.image}}" class="card-img-top" alt="{{ad.title}}">
+                    <div class="card-body ad-body">
+                        <h6 class="card-text text-dark mb-0">{{ad.title}}</h6>
+                        <span class="card-text font-monospace">{{ad.adress}}</span>
+                        <span class="card-text ad-description my-2">{{ad.description}}</span>
+                        <div class="card-end">
+                            <a href="/advertisement/{{ad.id}}" class="btn btn-primary ad-button">Visualizza</a>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+            <!-- TODO: add new house here -->
+        </section>
     {% endif %}
 
     <h4>Le tue richieste di visita</h4>

@@ -93,7 +93,7 @@ def get_landlord_ads(username):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT A.id, A.adress, A.title, A.rooms, A.type, A.description, A.rent, A.furniture, A.available,
+        SELECT A.id, A.adress, A.title, A.description, A.available,
             PI.path as image
         FROM ADVERTISEMENT A
         INNER JOIN PICTURES PI ON PI.ADVERTISEMENT_id = A.id
@@ -108,11 +108,6 @@ def get_landlord_ads(username):
     result = []
     for row in rows:
         ad = dict(row)
-        ad['rooms'] = get_rooms(ad['rooms'])
-        ad['furniture'] = get_furniture(ad['furniture'], ad['type'])
-        ad['type'] = get_type(ad['type'])
-        ad['rent_num'] =ad['rent']
-        ad['rent'] = get_rent(ad['rent'])
         ad['available'] = ad['available'] == True
 
         result.append(ad)
