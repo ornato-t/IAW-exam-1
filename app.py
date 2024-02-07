@@ -195,7 +195,19 @@ def post_login():
 @app.route('/personal')
 @login_required
 def get_personal():
-    return render_template('personal.html')
+    try:
+        user_visits = visits.get_user_visits(username=current_user.username)
+
+        landlord_ads = []
+        landlord_visits = []
+        if current_user.landlord:
+            landlord_ads = ads.get_landlord_ads(username=current_user.username)
+            landlord_visits = visits.get_landlord_visits(username=current_user.username)
+
+        return render_template('personal.html', user_visits=user_visits, landlord_ads=landlord_ads, landlord_visits=landlord_visits)
+    except Exception as e:
+        flash('Errore interno durante il caricamento della pagina personale, riprova più tardi', 'danger')
+        return redirect(url_for('get_home'))
 
 @app.route('/logout', methods=['POST'])
 @login_required

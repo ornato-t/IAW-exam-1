@@ -82,6 +82,11 @@ def get_ad_by_id(id):
 
     return advert
 
+def get_landlord_ads(username):
+    return []   # TODO
+
+# HELPER FUNCTIONS
+
 def get_rooms(num):
     """
     Pretty prints the number of rooms in a house. Returns '5+' if the house has more than 5 rooms
@@ -114,7 +119,6 @@ def get_type(house_type):
             return 'Villa'
         case _: # Default case if no other cases are matched, this should never happen
             return house_type
-
 
 def get_furniture(furniture, house_type):
     """

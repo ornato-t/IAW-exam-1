@@ -3,6 +3,15 @@
 {% set title = 'personale' %}
 {% block content %}
 <article class="container w-25 my-4">
-    <h2>Solo gli utenti loggati possono vedere questa pagina</h2>
+    {% if current_user.landlord %}
+        <h4>Richieste di visita alle tue proprietà</h4>
+        {{landlord_visits}}
+
+        <h4>Le tue proprietà</h4>
+        {{landlord_ads}}
+    {% endif %}
+
+    <h4>Le tue richieste di visita</h4>
+    {{user_visits}}
 </article>
 {% endblock %}
