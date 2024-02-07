@@ -254,23 +254,57 @@ def get_personal():
 @login_required
 def post_accept_visit():
     try:
-        # TODO
-        raise InternalServerError("Not implemented")
+        req = request.form.to_dict()
+
+        # Check if form is valid
+        if not re.match(r'^\d{2}\/\d{2}\/\d{4}$', req['date']):
+            raise BadRequest("Errore di formattazione nel campo 'date'")
+        if not re.match(r'^\d{1,2}-\d{2}$', req['time']):
+            raise BadRequest("Errore di formattazione nel campo 'time'")
+        if not re.match(r'^\d+$', req['advertisement']):
+            raise BadRequest("Errore di formattazione nel campo 'advertisement'")
+        if not re.match(r'^\w{1,30}$', req['visitor']):
+            raise BadRequest("Errore di formattazione nel campo 'visitor'")
+
+        # Run query, raise on errors
+        if not visits.accept_visit(landlord_username=current_user.username, advertisement_id=req['advertisement'], date=req['date'], time=req['time'], visitor_username=req['visitor']):
+            raise InternalServerError("Errore durante l'accettazione della visita")
+
+        flash('Visita accettata con successo', 'success')
+        return redirect(url_for('get_personal'))
     except HTTPException as e:
-        flash(str(e), 'warning')
+        flash(str(e), 'danger')
         return redirect(url_for('get_personal'))
     except Exception as e:
         flash(str(e), 'danger')
-        return redirect(url_for('get_personal'))
+        return redirect(url_for('get_personal'))    
 
 @app.route('/rejectVisit', methods=['POST'])
 @login_required
 def post_reject_visit():
     try:
-        # TODO
-        raise InternalServerError("Not implemented")
+        req = request.form.to_dict()
+
+        # Check if form is valid
+        if not re.match(r'^\d{2}\/\d{2}\/\d{4}$', req['date']):
+            raise BadRequest("Errore di formattazione nel campo 'date'")
+        if not re.match(r'^\d{1,2}-\d{2}$', req['time']):
+            raise BadRequest("Errore di formattazione nel campo 'time'")
+        if not re.match(r'^\d+$', req['advertisement']):
+            raise BadRequest("Errore di formattazione nel campo 'advertisement'")
+        if not re.match(r'^\w{1,30}$', req['visitor']):
+            raise BadRequest("Errore di formattazione nel campo 'visitor'")
+        if not re.match(r'[\w\sÀ-ž]+', req['reason']):
+            raise BadRequest("Errore di formattazione nel campo 'reason'")
+
+        # Run query, raise on errors
+        if not visits.reject_visit(landlord_username=current_user.username, advertisement_id=req['advertisement'], date=req['date'], reject_reason=req['reason'], time=req['time'], visitor_username=req['visitor']):
+            raise InternalServerError("Errore durante il rifiuto della visita")
+
+        flash('Visita rifiutata con successo', 'success')
+        return redirect(url_for('get_personal'))
     except HTTPException as e:
-        flash(str(e), 'warning')
+        flash(str(e), 'danger')
         return redirect(url_for('get_personal'))
     except Exception as e:
         flash(str(e), 'danger')
@@ -291,9 +325,9 @@ def validate_signup(user):
     :param user: the form to be validated
     :raise BadRequest: exception raised when the form isn't valid    
     """ 
-    username_regex = r'^[a-zA-Z0-9_]{1,30}$'
+    username_regex = r'^\w{1,30}$'
     email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-    name_regex = r'^[a-zA-Z\s\']{1,30}$'
+    name_regex = r'^[a-zA-Z\sÀ-ž\']{1,30}$'
     password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$'
     client_types = ["client", "landlord"]
 
@@ -315,7 +349,7 @@ def validate_login(user):
     :param user: the form to be validated
     :raise BadRequest: exception raised when the form isn't valid    
     """ 
-    username_regex = r'^[a-zA-Z0-9_]{1,30}$'
+    username_regex = r'^\w{1,30}$'
     password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$'
 
     if not re.match(username_regex, user['username']):

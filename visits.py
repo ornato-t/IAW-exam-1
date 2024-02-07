@@ -216,6 +216,15 @@ def get_landlord_visits(username):
     
     results.reverse()   # Reverse to make the most recent visits appear fist
     return results
+
+def accept_visit(landlord_username, visitor_username, advertisement_id, date, time):
+    print('ACCEPT:', landlord_username, visitor_username, advertisement_id, date, time) # TODO
+    return True
+
+def reject_visit(landlord_username, visitor_username, advertisement_id, date, time, reject_reason):
+    print('REJECT:', landlord_username, visitor_username, advertisement_id, date, time, reject_reason) # TODO
+    return True
+
 # HELPER FUNCTIONS
 
 def get_time_slots():

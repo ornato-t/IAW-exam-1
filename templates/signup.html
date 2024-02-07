@@ -12,7 +12,7 @@
         <input 
             class="form-control"
             placeholder="mario_rossi" name="username" id= "usernameForm" type="text" aria-describedby="usernameFormDescr"
-            required pattern="[a-zA-Z0-9_]{1,30}" autocapitalize="off"
+            required pattern="\w{1,30}" autocapitalize="off"
         >
         <div id="usernameFormDescr" class="form-text">
             Scegli attentamente, non potrai modificarlo in seguito. Può contenere lettere, numeri e trattini bassi.
@@ -31,7 +31,7 @@
         <input
             class="form-control"
             placeholder="Mario" name="name" id="nameForm" type="text" aria-describedby="nameFormDescr"
-            required autocapitalize="on" pattern="[a-zA-Z'\s]{1,30}"
+            required autocapitalize="on" pattern="[a-zA-Z\sÀ-ž\']{1,30}"
         >
         <div id="nameFormDescr" class="form-text">
             Il tuo vero nome. Sarà visibile agli altri utenti del sito.
