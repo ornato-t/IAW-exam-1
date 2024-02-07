@@ -1,7 +1,0 @@
-- Style personal frontend page
-  - landlord version extends renter version
-    - because of this, landlord should view their requests and visits (as customer) after their own apartments
-    - landlord views requests first, then their apartments, then their visit
-      - same layout for apartments
-      - list (no card) layout for requests
-  - client vies their request firsts, then their visits

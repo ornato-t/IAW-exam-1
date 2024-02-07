@@ -83,21 +83,19 @@
             {% for ad in landlord_ads %}
                 <article class="card landlord-ad-card {{ 'bg-light' if not ad.available else '' }}">
                     <img src="/static/images/{{ad.image}}" class="card-img-top" alt="{{ad.title}}">
-                    <span class="card-text font-monospace opacity-50 mx-auto">{{ 'Non visibile' if not ad.available else '' }}</span>
+                    <span class="card-text font-monospace opacity-50 mx-auto">{{ 'Non disponibile' if not ad.available else '' }}</span>
                     <div class="card-body ad-body">
                         <h6 class="card-text text-dark mb-0">{{ad.title}}</h6>
                         <span class="card-text font-monospace">{{ad.adress}}</span>
                         <span class="card-text ad-description my-2">{{ad.description}}</span>
                         <div class="card-end">
                             <a href="/advertisement/{{ad.id}}/edit" class="btn btn-outline-primary edit-ad-button">Modifica</a>
-                            <!-- TODO: create edit ad page -->
                             <a href="/advertisement/{{ad.id}}" class="btn btn-primary ad-button">Visualizza</a>
                         </div>
                     </div>
                 </article>
             {% endfor %}
             <a class="card landlord-ad-card btn btn-light" href="/advertisement/new">
-                <!-- TODO: create new ad page -->
                 <div class="card-body new-ad-hero">
                     <i class='bx bx-add-to-queue bx-lg'></i>
                     <p>Aggiungi un nuovo annuncio.</p>
@@ -150,8 +148,7 @@
                 {% if visit.status == 'rejected' %}
                     <tr class="borderless-lower-row">
                         <td colspan="7">
-                            <strong>{{visit.landlord_name}}</strong>
-                            ha rifiutato la tua visita con il seguente messaggio: <span class="text-danger">{{visit.refusal_reason}}</span>
+                            {{visit.landlord_name}} ha rifiutato la tua visita con il seguente messaggio: <span class="text-danger">{{visit.refusal_reason}}</span>
                         </td>
                     </tr>
                 {% endif %}

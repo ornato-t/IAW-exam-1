@@ -141,6 +141,46 @@ def post_visit(id):
         flash(str(e), 'danger')
         return redirect(url_for('get_home'))
 
+@login_required 
+@app.route('/advertisement/<int:id>/edit')
+def get_edit_advertisement(id):
+    # TODO
+    try:
+        advertisement = ads.get_ad_by_id(id=id)
+        if advertisement == None:
+            raise NotFound('Nessun annuncio corrispondente trovato')
+
+        if not advertisement['available'] and (not current_user.is_authenticated or advertisement['landlord_username'] != current_user.username):
+            raise NotFound('Nessun annuncio corrispondente trovato')    # Using 404 rather than 401 for security reasons: avoid leaking info on hidden houses
+
+        already_seen = False
+        pending_visit = False
+
+        if current_user.is_authenticated:
+            already_seen = visits.has_user_visited(username=current_user.username, advertisement_id=id)
+            pending_visit = visits.is_user_waiting_visit(username=current_user.username, advertisement_id=id)
+
+        return render_template('advertisement.html', ad=advertisement, seen=already_seen, pending=pending_visit)
+    except HTTPException as e:
+        flash(str(e), 'warning')
+        return redirect(url_for('get_home'))
+    except Exception as e:
+        flash(str(e), 'danger')
+        return redirect(url_for('get_home'))
+
+@login_required 
+@app.route('/advertisement/new')
+def get_new_advertisement():
+    try:
+        # TODO
+        raise InternalServerError("Not implemented")
+    except HTTPException as e:
+        flash(str(e), 'warning')
+        return redirect(url_for('get_personal'))
+    except Exception as e:
+        flash(str(e), 'danger')
+        return redirect(url_for('get_personal'))
+
 @app.route('/about')
 def get_about():
     return render_template('about.html')
@@ -209,6 +249,32 @@ def get_personal():
         print('ERROR', str(e))
         flash('Errore interno durante il caricamento della pagina personale, riprova più tardi', 'danger')
         return redirect(url_for('get_home'))
+
+@app.route('/acceptVisit', methods=['POST'])
+@login_required
+def post_accept_visit():
+    try:
+        # TODO
+        raise InternalServerError("Not implemented")
+    except HTTPException as e:
+        flash(str(e), 'warning')
+        return redirect(url_for('get_personal'))
+    except Exception as e:
+        flash(str(e), 'danger')
+        return redirect(url_for('get_personal'))
+
+@app.route('/rejectVisit', methods=['POST'])
+@login_required
+def post_reject_visit():
+    try:
+        # TODO
+        raise InternalServerError("Not implemented")
+    except HTTPException as e:
+        flash(str(e), 'warning')
+        return redirect(url_for('get_personal'))
+    except Exception as e:
+        flash(str(e), 'danger')
+        return redirect(url_for('get_personal'))        
 
 @app.route('/logout', methods=['POST'])
 @login_required
