@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Nuova inserzione{% endblock %}
+{% set title = 'new' %}
+
+{% block content %}
+<form class="container w-35 my-4" method="post">
+    <h1 class="mb-4">Crea una nuova inserzione</h1>
+
+    <section class="row mb-3">
+        <label for="ad-title" class="col-sm-4 col-form-label">Titolo</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" id="ad-title" name="title" required placeholder="Titolo dell'annuncio">
+        </div>
+    </section>
+
+    <section class="row mb-3">
+        <label for="ad-adress" class="col-sm-4 col-form-label">Indirizzo</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" id="ad-adress" name="adress" required placeholder="Via Roma 10">
+        </div>
+    </section>
+
+    <section class="row mb-3">
+        <label for="ad-type" class="col-sm-4 col-form-label">Tipologia</label>
+        <div class="col-sm-8">
+            <select class="form-select" id="ad-type" name="type" required>
+                <option value="" selected disabled hidden>Seleziona</option>
+                <option value="detached">Casa indipendente</option>
+                <option value="flat">Appartamento</option>
+                <option value="loft">Loft</option>
+                <option value="villa">Villa</option>
+            </select> 
+        </div>
+    </section>
+
+    <section class="row mb-3">
+        <label for="ad-rooms" class="col-sm-4 col-form-label">Numero di locali</label>
+        <div class="col-sm-8">
+            <select class="form-select" id="ad-rooms" name="rooms" required>
+                <option value="" selected disabled hidden>Seleziona</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">5+</option>
+            </select> 
+        </div>
+    </section>
+    
+    <section class="row mb-3">
+        <label for="ad-description" class="col-sm-4 col-form-label">Descrizione</label>
+        <div class="col-sm-8">
+            <textarea class="form-control" id="ad-description" name="description" required placeholder="Descrizione della proprietà, amenità in zona, punti di riferimento..."></textarea>
+        </div>
+    </section>
+
+    <section class="row mb-3">
+        <label for="ad-rent" class="col-sm-4 col-form-label">Affitto mensile</label>
+        <div class="col-sm-6">
+            <input type="number" class="form-control" placeholder="100" min="0" id="ad-rent" name="rent" required/>
+        </div>
+        <span class="col-sm-2 col-form-label">
+            €/mese
+        </span>
+
+    </section>
+
+    <fieldset class="row mb-3">
+        <legend class="col-form-label col-sm-4 pt-0">La proprietà è arredata?</legend>
+        <div class="col-sm-8">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="ad-furniture1" name="furniture" value="true" checked>
+                <label class="form-check-label" for="ad-furniture1">
+                    Sì
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="ad-furniture2" name="furniture" value="false">
+                <label class="form-check-label" for="ad-furniture2">
+                    No
+                </label>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="row mb-3">
+        <legend class="col-form-label col-sm-4 pt-0">La proprietà è disponibile?</legend>
+        <div class="col-sm-8">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="ad-available1" name="available" value="true" checked>
+                <label class="form-check-label" for="ad-available1">
+                    Sì
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="ad-available2" name="available" value="false">
+                <label class="form-check-label" for="ad-available2">
+                    No
+                </label>
+            </div>
+        </div>
+    </fieldset>
+
+    <!-- TODO -->
+    <!-- <section class="row mb-3">
+        <label for="ad-rooms" class="col-sm-4 col-form-label">Aggiungi da una a cinque immagini</label>
+        <div class="col-sm-8">
+            <input type="file">
+        </div>
+    </section> -->
+
+    <button type="submit" class="btn btn-primary">Crea annuncio</button>
+</form>
+{% endblock %}

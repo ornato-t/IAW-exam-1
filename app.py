@@ -141,8 +141,8 @@ def post_visit(id):
         flash(str(e), 'danger')
         return redirect(url_for('get_home'))
 
-@login_required 
 @app.route('/advertisement/<int:id>/edit')
+@login_required 
 def get_edit_advertisement(id):
     # TODO
     try:
@@ -168,18 +168,30 @@ def get_edit_advertisement(id):
         flash(str(e), 'danger')
         return redirect(url_for('get_home'))
 
-@login_required 
 @app.route('/advertisement/new')
+@login_required
 def get_new_advertisement():
     try:
-        # TODO
-        raise InternalServerError("Not implemented")
+        if not current_user.landlord:
+            raise Forbidden("Solo i locatori possono creare nuovi annunci")
+            
+        return render_template('new_ad.html')
     except HTTPException as e:
         flash(str(e), 'warning')
         return redirect(url_for('get_personal'))
-    except Exception as e:
-        flash(str(e), 'danger')
-        return redirect(url_for('get_personal'))
+
+@app.route('/advertisement/new', methods=['post'])
+@login_required 
+def post_new_advertisement():
+    try:
+        req = request.form.to_dict()
+        print(req) # TODO
+
+        flash('Inserzione creata con successo', 'success')
+        return render_template('new_ad.html')
+    except HTTPException as e:
+        flash(str(e), 'warning')
+        return redirect(url_for('get_new_advertisement'))
 
 @app.route('/about')
 def get_about():

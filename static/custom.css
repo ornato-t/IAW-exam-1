@@ -141,3 +141,8 @@ main {
 .landlord-form-text{
     width: 24rem;
 }
+
+/* ADD / EDIT ADVERTISEMENT */
+.w-35 {
+    width: 35%;
+}
