@@ -10,6 +10,7 @@ import ads
 import visits
 import user_db
 from models import User
+import image_handler
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = uuid.uuid4().hex
@@ -185,7 +186,12 @@ def get_new_advertisement():
 def post_new_advertisement():
     try:
         req = request.form.to_dict()
-        print(req) # TODO
+        files = request.files.getlist('immagine')
+
+        # Only parse the first 5 images (imposing upload cap, can't do it on client)
+        for file in files[:5]:
+            image = image_handler.save_image(image_form=file)
+            print(image)
 
         flash('Inserzione creata con successo', 'success')
         return render_template('new_ad.html')

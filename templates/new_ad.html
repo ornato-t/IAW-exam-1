@@ -3,7 +3,7 @@
 {% set title = 'new' %}
 
 {% block content %}
-<form class="container w-35 my-4" method="post">
+<form class="container w-35 my-4" method="post" enctype="multipart/form-data">
     <h1 class="mb-4">Crea una nuova inserzione</h1>
 
     <section class="row mb-3">
@@ -102,14 +102,13 @@
         </div>
     </fieldset>
 
-    <!-- TODO -->
-    <!-- <section class="row mb-3">
-        <label for="ad-rooms" class="col-sm-4 col-form-label">Aggiungi da una a cinque immagini</label>
+    <section class="row mb-3">
+        <label for="ad-image" class="col-sm-4 col-form-label">Aggiungi delle immagini (massimo 5)</label>
         <div class="col-sm-8">
-            <input type="file">
+            <input class="form-control" name="immagine" type="file" id="ad-image" required multiple>
         </div>
-    </section> -->
+    </section>
 
-    <button type="submit" class="btn btn-primary">Crea annuncio</button>
+    <button type="submit" class="btn btn-primary mt-3">Crea annuncio</button>
 </form>
 {% endblock %}
