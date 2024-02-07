@@ -83,8 +83,42 @@ def get_ad_by_id(id):
     return advert
 
 def get_landlord_ads(username):
-    return []   # TODO
+    """
+    Queries the database and returns a list of advertisements belonging to a given landlord
 
+    :returns: a list of all advertisements on the site
+    """ 
+    conn = sqlite3.connect('database/database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT A.id, A.adress, A.title, A.rooms, A.type, A.description, A.rent, A.furniture, A.available,
+            PI.path as image
+        FROM ADVERTISEMENT A
+        INNER JOIN PICTURES PI ON PI.ADVERTISEMENT_id = A.id
+        WHERE A.landlord_username = ?
+        GROUP BY A.id;
+    """, (username,))
+    rows = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    result = []
+    for row in rows:
+        ad = dict(row)
+        ad['rooms'] = get_rooms(ad['rooms'])
+        ad['furniture'] = get_furniture(ad['furniture'], ad['type'])
+        ad['type'] = get_type(ad['type'])
+        ad['rent_num'] =ad['rent']
+        ad['rent'] = get_rent(ad['rent'])
+        ad['available'] = ad['available'] == True
+
+        result.append(ad)
+
+    return result
+    
 # HELPER FUNCTIONS
 
 def get_rooms(num):

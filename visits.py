@@ -156,7 +156,7 @@ def get_user_visits(username):
         INNER JOIN ADVERTISEMENT A ON A.id = V.ADVERTISEMENT_id
         INNER JOIN PICTURES P ON P.ADVERTISEMENT_id = A.id
 		INNER JOIN PERSON PE ON A.landlord_username = PE.username
-        WHERE visitor_username = ?
+        WHERE V.visitor_username = ?
         GROUP BY A.ID;
     """
     cursor.execute(sql, (username,))
@@ -181,8 +181,49 @@ def get_user_visits(username):
     return results
 
 def get_landlord_visits(username):
-    return []   #TODO
+    """
+    Fetches the list of visits booked to all properties belonging to a landlord and basic information on the relevant properties
 
+    :returns: A list of visit reservations
+    """
+    slots = get_time_slots()
+
+    conn = sqlite3.connect('database/database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    sql = """
+        SELECT V.date, V.time, V.virtual, V.status, V.refusal_reason, 
+            A.title as ad_title, A.adress as ad_adress, A.type as ad_type, A.furniture as ad_furniture, A.rooms as ad_rooms, 
+            P.path AS ad_image,
+			PE.name as user_name
+        FROM VISIT V
+        INNER JOIN ADVERTISEMENT A ON A.id = V.ADVERTISEMENT_id
+        INNER JOIN PICTURES P ON P.ADVERTISEMENT_id = A.id
+		INNER JOIN PERSON PE ON V.visitor_username = PE.username
+        WHERE A.landlord_username = ?
+        GROUP BY A.ID;
+    """
+    cursor.execute(sql, (username,))
+    rows = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    results = []
+    for row in rows:
+        res = dict(row)
+        date_obj = datetime.strptime(res['date'], '%Y-%m-%d %H:%M:%S')
+        res['date'] = date_obj.strftime('%d/%m/%Y')
+        res['time'] = Slot.parse(res['time'])
+        res['virtual'] = res['virtual'] == True
+        res['ad_rooms'] = ads.get_rooms(res['ad_rooms'])
+        res['ad_furniture'] = ads.get_furniture(res['ad_furniture'], res['ad_type'])
+        res['ad_type'] = ads.get_type(res['ad_type'])
+
+        results.append(res)
+    
+    return results
 # HELPER FUNCTIONS
 
 def get_time_slots():

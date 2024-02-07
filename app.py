@@ -206,6 +206,7 @@ def get_personal():
 
         return render_template('personal.html', user_visits=user_visits, landlord_ads=landlord_ads, landlord_visits=landlord_visits)
     except Exception as e:
+        print('ERROR', str(e))
         flash('Errore interno durante il caricamento della pagina personale, riprova più tardi', 'danger')
         return redirect(url_for('get_home'))
 
