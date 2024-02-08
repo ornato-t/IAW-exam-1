@@ -225,6 +225,9 @@ def post_edit_advertisement(id):
 
         flash('Inserzione modificata con successo', 'success')
         return redirect(url_for('get_advertisement', id=id))
+    except image_handler.ImageException as e:
+        flash("Errore durante il salvataggio dell'immagine: "+e.file, 'warning')
+        return redirect(url_for('get_new_advertisement'))
     except HTTPException as e:
         flash(str(e), 'warning')
         return redirect(url_for('get_personal'))
@@ -276,6 +279,9 @@ def post_new_advertisement():
 
         flash('Inserzione creata con successo', 'success')
         return render_template('new_ad.html')
+    except image_handler.ImageException as e:
+        flash("Errore durante il salvataggio dell'immagine: "+e.file, 'warning')
+        return redirect(url_for('get_new_advertisement'))
     except HTTPException as e:
         flash(str(e), 'warning')
         return redirect(url_for('get_new_advertisement'))
