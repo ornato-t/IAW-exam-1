@@ -10,10 +10,10 @@
         </div>
     {% endif %}
       
-    <header class="row">
+    <header class="row mb-1">
         <div class="col-md-9">
            <h2>{{ ad.title }}</h2>
-           <h5>{{ ad.type }} {{ ad.furniture }} in {{ ad.adress }} - {{ad.rooms}} locali</h5>
+           <h5>{{ ad.type }} {{ ad.furniture }} in {{ ad.adress }} - {{ad.rooms}} {{'locale' if ad.rooms == '1' else 'locali'}}</h5>
         </div>
         <div class="col-md-3 text-right mt-auto">
            <h3>{{ ad.rent }} €/mese</h3>
@@ -28,22 +28,23 @@
         {% endfor %}
     </section>
     {% if ad.images|length > 1 %}
-        <section class="d-flex justify-content-center pt-1 pb-2 gap-2">
+        <section class="d-flex justify-content-center pt-1 gap-2">
             {% for image in ad.images %}
                 <a href="#ad-image-{{loop.index}}" class="btn btn-sm btn-light">{{loop.index}}</a>
             {% endfor %}
         </section>
     {% endif %}
    
-    <section class="row">
-        <div class="col-md-9">
+    <section class="row mt-2">
+        <div class="col-md-6">
             <p><strong class="fw-semibold">Locatore:</strong> {{ad.landlord_name}}</p>
         </div>
     
-        <div class="col-md-3 d-flex flex-column justify-content-end">
+        <div class="col-md-6 d-flex flex-row gap-2 justify-content-end">
             {% if not current_user.is_authenticated %}
                 <a class="btn btn-secondary disabled">Effettua il login per prenotare una visita</a>
             {% elif current_user.username == ad.landlord_username %}
+                <a href="/advertisement/{{ad.id}}/edit" class="btn btn-outline-secondary text-body">Modifica inserzione</a>
                 <a href="/personal" class="btn btn-secondary">Controlla le prenotazioni</a>
             {% elif seen %}
                 <a class="btn btn-secondary disabled">Abitazione già visitata</a>

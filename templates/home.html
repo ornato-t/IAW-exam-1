@@ -34,7 +34,7 @@
                     <h6 class="card-text text-dark mb-0">{{ad.title}}</h6>
                     <h5 class="card-title fs-6"><span class="fs-2">{{ad.rent}}</span> €/mese</h5>
                     <span class="card-text font-monospace">{{ad.adress}}</span>
-                    <span class="card-text fst-italic">{{ad.type}} {{ ad.furniture }}, {{ad.rooms}} locali</span>
+                    <span class="card-text fst-italic">{{ad.type}} {{ ad.furniture }}, {{ad.rooms}} {{'locale' if ad.rooms == '1' else 'locali'}}</span>
                     <span class="card-text ad-description my-3">{{ad.description}}</span>
                     <div class="card-end">
                       <a href="/advertisement/{{ad.id}}" class="btn btn-primary ad-button">Visualizza</a>
