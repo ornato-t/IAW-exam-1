@@ -9,12 +9,10 @@ def add_user(user):
         sql = 'INSERT INTO PERSON(username, email, password, name, landlord) VALUES(?, ?, ?, ?, ?)'
 
         cursor.execute(sql, (user['username'], user['email'], user['password'], user['name'], True if user['client_type'] == 'landlord' else False))
-        conn.commit()
 
         return True
     except Exception as e:
         print('ERROR', str(e))
-        conn.rollback()
         
         return False
     finally:
