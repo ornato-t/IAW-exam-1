@@ -29,6 +29,16 @@ def login(username):
 
     return user
 
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # HTTP error
+    if isinstance(e, HTTPException):
+        return render_template("error.html", code=f'{e.code} - {e.name}', message=e.description)
+
+    # Non HTTP error. To avoid leaking internal data they are masked as 500s and printed to the console
+    print(str(e))
+    return render_template("error.html", code='500 - Internal Server Error', message="Errore interno.")
+
 @app.route('/')
 def get_home():
     try:

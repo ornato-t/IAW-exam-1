@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Errore{% endblock %}
+{% set title = 'error' %}
+
+{% block content %}
+<article class="container w-50">
+    <h1 class="mt-1 mb-3">
+        Errore {{code}}
+    </h1>
+    <h5>
+        Il server ha restituito il seguente messaggio:
+    </h5>
+    <p>
+        {{message}}
+    </p>
+</article>
+{% endblock %}
