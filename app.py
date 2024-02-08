@@ -197,6 +197,11 @@ def post_edit_advertisement(id):
         if req['available'] not in ['true', 'false']:
             raise BadRequest("Errore di formattazione nel campo 'available'")
 
+        # Check house ownership
+        landlord_db = ads.get_ad_landlord(advertisement_id=id)
+        if not current_user.username == landlord_db:
+            raise Forbidden("Non puoi modificare l'annuncio di un altro locatore")
+
         paths = []  # If no images were uploaded this remains empty. If it is empty, the images in the DB aren't udpated
 
         # Check if any images were uploaded

@@ -243,6 +243,38 @@ def get_ad_images(advertisement_id):
         cursor.close()
         conn.close()
 
+def get_ad_landlord(advertisement_id):
+    """
+    Fetches the username of the landlord of a given advertisement
+
+    :returns: the landlord's username
+    """
+    try:
+        conn = sqlite3.connect('database/database.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT landlord_username
+            FROM ADVERTISEMENT
+            WHERE id = ?
+            LIMIT 1;
+        """
+        cursor.execute(sql, (advertisement_id,))
+        res = cursor.fetchone()
+
+        if res is None or res[0] is None:
+            return None
+
+        advert = dict(res)
+        return advert['landlord_username']
+    except Exception as e:
+        print("ERROR", str(e))
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
 # HELPER FUNCTIONS
 
 def get_rooms(num):
