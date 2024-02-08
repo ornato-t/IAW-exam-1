@@ -199,7 +199,9 @@ def post_edit_advertisement(id):
 
         # Check house ownership
         landlord_db = ads.get_ad_landlord(advertisement_id=id)
-        if not current_user.username == landlord_db:
+        if landlord_db is None:
+            raise InternalServerError("Errore durante la modifica dell'inserzione")
+        elif current_user.username != landlord_db:
             raise Forbidden("Non puoi modificare l'annuncio di un altro locatore")
 
         paths = []  # If no images were uploaded this remains empty. If it is empty, the images in the DB aren't udpated
@@ -208,6 +210,9 @@ def post_edit_advertisement(id):
         if not any(file.filename == '' for file in files):
             # Delete the existing images
             images = ads.get_ad_images(advertisement_id=id)
+            if len(images) == 0:
+                raise InternalServerError("Erorre durante la modifica delle immagini")
+
             image_handler.delete_images(path_list=images)
 
             # Save the new images. Only parse the first 5 images (imposing upload cap, can't do it on client)
