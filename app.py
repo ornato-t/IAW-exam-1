@@ -411,7 +411,7 @@ def post_reject_visit():
             raise BadRequest("Errore di formattazione nel campo 'advertisement'")
         if not re.match(r'^\w{1,30}$', req['visitor']):
             raise BadRequest("Errore di formattazione nel campo 'visitor'")
-        if not re.match(r'[\w\sÀ-ž]+', req['reason']):
+        if not re.match(r'.+', req['reason']):
             raise BadRequest("Errore di formattazione nel campo 'reason'")
 
         # Run query, raise on errors
