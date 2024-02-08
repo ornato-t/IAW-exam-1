@@ -7,5 +7,4 @@
 - Add edit button next to reservation if owner
 - Add try except to image_handler; return False and throw InternalError in Flask;
   - EDIT: no, use generic exceptions instead
-- Edit:
-  - Specify behaviour in UI (consider including tiny carousel of existing imgs)
+- Resize columns in new advertisement

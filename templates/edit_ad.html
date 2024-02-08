@@ -8,22 +8,22 @@
     <h1 class="mb-4">Modifica un'inserzione</h1>
 
     <section class="row mb-3">
-        <label for="ad-title" class="col-sm-4 col-form-label">Titolo</label>
-        <div class="col-sm-8">
+        <label for="ad-title" class="col-sm-5 col-form-label">Titolo</label>
+        <div class="col-sm-7">
             <input type="text" class="form-control" id="ad-title" name="title" required placeholder="Titolo dell'annuncio" value="{{ad.title}}">
         </div>
     </section>
 
     <section class="row mb-3">
-        <label for="ad-adress" class="col-sm-4 col-form-label">Indirizzo</label>
-        <div class="col-sm-8">
+        <label for="ad-adress" class="col-sm-5 col-form-label">Indirizzo</label>
+        <div class="col-sm-7">
             <input type="text" class="form-control" id="ad-adress" disabled placeholder="{{ad.adress}}">
         </div>
     </section>
 
     <section class="row mb-3">
-        <label for="ad-type" class="col-sm-4 col-form-label">Tipologia</label>
-        <div class="col-sm-8">
+        <label for="ad-type" class="col-sm-5 col-form-label">Tipologia</label>
+        <div class="col-sm-7">
             <select class="form-select" id="ad-type" name="type" required>
                 <option value="" disabled hidden>Seleziona</option>
                 <option value="detached" {% if ad.type == 'detached' %}selected{% endif %}>Casa indipendente</option>
@@ -35,8 +35,8 @@
     </section>
 
     <section class="row mb-3">
-        <label for="ad-rooms" class="col-sm-4 col-form-label">Numero di locali</label>
-        <div class="col-sm-8">
+        <label for="ad-rooms" class="col-sm-5 col-form-label">Numero di locali</label>
+        <div class="col-sm-7">
             <select class="form-select" id="ad-rooms" name="rooms" required>
                 <option value="" disabled hidden>Seleziona</option>
                 <option value="1" {% if ad.rooms == 1 %}selected{% endif %}>1</option>
@@ -50,15 +50,15 @@
     </section>
     
     <section class="row mb-3">
-        <label for="ad-description" class="col-sm-4 col-form-label">Descrizione</label>
-        <div class="col-sm-8">
+        <label for="ad-description" class="col-sm-5 col-form-label">Descrizione</label>
+        <div class="col-sm-7">
             <textarea class="form-control" id="ad-description" name="description" required placeholder="Descrizione della proprietà, amenità in zona, punti di riferimento...">{{ad.description}}</textarea>
         </div>
     </section>
 
     <section class="row mb-3">
-        <label for="ad-rent" class="col-sm-4 col-form-label">Affitto mensile</label>
-        <div class="col-sm-6">
+        <label for="ad-rent" class="col-sm-5 col-form-label">Affitto mensile</label>
+        <div class="col-sm-5">
             <input type="number" class="form-control" placeholder="100" min="0" id="ad-rent" name="rent" required value="{{ad.rent}}"/>
         </div>
         <span class="col-sm-2 col-form-label">
@@ -68,8 +68,8 @@
     </section>
 
     <fieldset class="row mb-3">
-        <legend class="col-form-label col-sm-4 pt-0">La proprietà è arredata?</legend>
-        <div class="col-sm-8">
+        <legend class="col-form-label col-sm-5 pt-0">La proprietà è arredata?</legend>
+        <div class="col-sm-7">
             <div class="form-check">
                 <input class="form-check-input" type="radio" id="ad-furniture1" name="furniture" value="true" {% if ad.furniture == 1 %}checked{% endif %}>
                 <label class="form-check-label" for="ad-furniture1">
@@ -86,8 +86,8 @@
     </fieldset>
 
     <fieldset class="row mb-3">
-        <legend class="col-form-label col-sm-4 pt-0">La proprietà è disponibile?</legend>
-        <div class="col-sm-8">
+        <legend class="col-form-label col-sm-5 pt-0">La proprietà è disponibile?</legend>
+        <div class="col-sm-7">
             <div class="form-check">
                 <input class="form-check-input" type="radio" id="ad-available1" name="available" value="true" {% if ad.available == 1 %}checked{% endif %}>
                 <label class="form-check-label" for="ad-available1">
@@ -102,14 +102,47 @@
             </div>
         </div>
     </fieldset>
-    <!-- TODO -->
-    <section class="row mb-3">
-        <label for="ad-image" class="col-sm-4 col-form-label">Aggiungi delle immagini (massimo 5)</label>
-        <div class="col-sm-8">
+
+    <article class="row mb-3">        
+        <h4>Immagini</h4>
+        <p>
+            L'inserzione contiene le seguenti immagini:
+        </p>
+
+        <section class="col-sm-12">
+            <div class="custom-carousel w-50">
+                {% for image in ad.images %}
+                <div id="ad-image-{{loop.index}}" class="custom-carousel-item w-100">
+                    <img src="{{ url_for('static', filename='images/'+image) }}" alt="Immagine della" class="w-100">
+                </div>
+                {% endfor %}
+            </div>
+            {% if ad.images|length > 1 %}
+            <div class="d-flex justify-content-center pt-1 pb-2 gap-2 w-50">
+                {% for image in ad.images %}
+                <a href="#ad-image-{{loop.index}}" class="btn btn-sm btn-light">{{loop.index}}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+    </article>
+
+    <section class="row mt-4 mb-2">
+        <h4>Modifica delle immagini</h4>
+        <p>
+            Usa il modulo sottostante per caricare delle nuove immagini. Le immagini già esistenti verranno cancellate e sostituite da quelle nuove.
+            <br>
+            <small>Se non desideri modificare le immagini ignora il modulo e clicca: "Modifica annuncio".</small>
+        </p>
+    </section>
+
+    <section class="row mb-2">
+        <label for="ad-image" class="col-sm-5 col-form-label">Carica delle immagini (massimo 5)</label>
+        <div class="col-sm-7">
             <input class="form-control" name="immagine" type="file" id="ad-image" multiple>
         </div>
     </section>
 
-    <button type="submit" class="btn btn-primary mt-3">Modifica annuncio</button>
+    <button type="submit" class="btn btn-primary mt-4 mb-5">Modifica annuncio</button>
 </form>
 {% endblock %}
