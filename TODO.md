@@ -4,3 +4,8 @@
 - Add try...catch to all queries, return None on failure
   - Consider then removing generic Exception and throwing a specific exception
 - Try adding generic error page for not logged in and such
+- Add edit button next to reservation if owner
+- Add try except to image_handler; return False and throw InternalError in Flask;
+  - EDIT: no, use generic exceptions instead
+- Edit:
+  - Specify behaviour in UI (consider including tiny carousel of existing imgs)

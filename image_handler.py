@@ -1,5 +1,6 @@
 from PIL import Image, ImageOps
 import uuid
+import os
 
 # Desired file sizes for a 16:9 aspect ratio
 WIDTH = 1280
@@ -32,3 +33,14 @@ def save_image(image_form):
     new_img.save(f'static/images/{new_filename}')
 
     return new_filename
+
+def delete_images(path_list):
+    for image_path in path_list:
+        try:
+            full_path = f'static/images/{image_path}'
+            if os.path.isfile(full_path):
+                os.remove(full_path)
+            else:
+                print(f"File not found: {full_path}")
+        except Exception as e:
+            print('ERROR', str(e))

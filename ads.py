@@ -129,6 +129,11 @@ def get_landlord_ads(username):
     return result
 
 def insert_ad(title, adress, description, rooms, rent, ad_type, furniture, available, pictures, landlord_username):
+    """
+    Inserts a new advertisement and its pictures into the database
+
+    :returns: True if the insertion was succesful, False in case of errors
+    """
     try:
         # Cast non string types
         rooms = int(rooms)
@@ -157,6 +162,83 @@ def insert_ad(title, adress, description, rooms, rent, ad_type, furniture, avail
         conn.rollback()
         
         return False
+    finally:
+        cursor.close()
+        conn.close()
+
+def edit_ad(title, description, rooms, rent, ad_type, furniture, available, pictures, landlord_username, advertisement_id):
+    """
+    Edits an existing advertisement. If any pictures were provided it deletes the existing ones and replaces them with the new ones
+
+    :returns: True if the edit was succesful, False in case of errors
+    """
+    try:
+        # Cast non string types
+        rooms = int(rooms)
+        rent = float(rent)
+        furniture = furniture == 'true'
+        available = available == 'true'
+
+        conn = sqlite3.connect('database/database.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("BEGIN TRANSACTION")
+
+        sql = """
+            UPDATE ADVERTISEMENT
+            SET title = ?, rooms = ?, type = ?, description = ?, rent = ?, furniture = ?, available = ?
+            WHERE id = ? AND landlord_username = ?
+        """
+
+        cursor.execute(sql, (title, rooms, ad_type, description, rent, furniture, available, advertisement_id, landlord_username))
+
+        # Update pictures
+        if len(pictures) > 0:
+            # Delete previously saved pictures
+            sql_delete = 'DELETE FROM PICTURES WHERE ADVERTISEMENT_id = ?'
+            cursor.execute(sql_delete, (advertisement_id,))
+
+            # Insert new pictures
+            pictures = [(picture_path, advertisement_id) for picture_path in pictures]    # Map list of paths to list of tuples
+            sql_insert = 'INSERT INTO PICTURES(path, ADVERTISEMENT_id) VALUES(?, ?)'
+            cursor.executemany(sql_insert, pictures)   # This is ran as a signle INSERT statement
+
+        conn.commit()
+        return True
+    except Exception as e:
+        print('ERROR', str(e))
+        conn.rollback()
+        
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_ad_images(advertisement_id):
+    """
+    Fetches a list of image paths from the database
+    """
+    try:
+        conn = sqlite3.connect('database/database.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT GROUP_CONCAT(path) AS images
+            FROM PICTURES
+            WHERE ADVERTISEMENT_id = ?
+        """
+        cursor.execute(sql, (advertisement_id,))
+        res = cursor.fetchone()
+
+        if res is None or res[0] is None:
+            return []
+
+        advert = dict(res)
+        return advert['images'].split(',')
+    except Exception as e:
+        print("ERROR", str(e))
+        return []
     finally:
         cursor.close()
         conn.close()

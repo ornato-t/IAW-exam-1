@@ -174,6 +174,51 @@ def get_edit_advertisement(id):
         
         return redirect(url_for('get_personal'))
 
+@app.route('/advertisement/<int:id>/edit', methods=['post'])
+@login_required 
+def post_edit_advertisement(id):
+    try:
+        req = request.form.to_dict()
+        files = request.files.getlist('immagine')
+
+        # Check if form is valid
+        if not re.match(r'\w+', req['title']):
+            raise BadRequest("Errore di formattazione nel campo 'title'")
+        if not re.match(r'\w+', req['description']):
+            raise BadRequest("Errore di formattazione nel campo 'description'")
+        if not re.match(r'^[123456]$', req['rooms']):
+            raise BadRequest("Errore di formattazione nel campo 'rooms'")
+        if not re.match(r'\d+', req['rent']):
+            raise BadRequest("Errore di formattazione nel campo 'rent'")
+        if req['type'] not in ['detached', 'flat', 'loft', 'villa']:
+            raise BadRequest("Errore di formattazione nel campo 'type'")
+        if req['furniture'] not in ['true', 'false']:
+            raise BadRequest("Errore di formattazione nel campo 'furniture'")
+        if req['available'] not in ['true', 'false']:
+            raise BadRequest("Errore di formattazione nel campo 'available'")
+
+        paths = []  # If no images were uploaded this remains empty. If it is empty, the images in the DB aren't udpated
+
+        # Check if any images were uploaded
+        if not any(file.filename == '' for file in files):
+            # Delete the existing images
+            images = ads.get_ad_images(advertisement_id=id)
+            image_handler.delete_images(path_list=images)
+
+            # Save the new images. Only parse the first 5 images (imposing upload cap, can't do it on client)
+            for file in files[:5]:
+                paths.append(image_handler.save_image(image_form=file))
+
+        # Update the advertisement in the database
+        if not ads.edit_ad(title=req['title'], available=req['available'], description=req['description'], furniture=req['furniture'], rent=req['rent'], rooms=req['rooms'], ad_type=req['type'], pictures=paths, landlord_username=current_user.username, advertisement_id=id):
+            raise InternalServerError('Errore durante la modifica dell\'inserzione')
+
+        flash('Inserzione modificata con successo', 'success')
+        return redirect(url_for('get_advertisement', id=id))
+    except HTTPException as e:
+        flash(str(e), 'warning')
+        return redirect(url_for('get_personal'))
+
 @app.route('/advertisement/new')
 @login_required
 def get_new_advertisement():
