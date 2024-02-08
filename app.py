@@ -288,7 +288,7 @@ def post_new_advertisement():
             raise InternalServerError('Errore durante il salvataggio dell\'inserzione')
 
         flash('Inserzione creata con successo', 'success')
-        return render_template('new_ad.html')
+        return redirect(url_for('get_personal'))
     except image_handler.ImageException as e:
         flash("Errore durante il salvataggio dell'immagine: "+e.file, 'warning')
         return redirect(url_for('get_new_advertisement'))

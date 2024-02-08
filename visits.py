@@ -136,10 +136,12 @@ def insert_visit(username, advertisement_id, date, time, virtual):
         sql = 'INSERT INTO VISIT(date, time, visitor_username, ADVERTISEMENT_id, virtual, status) VALUES(?, ?, ?, ?, ?, ?)'
 
         cursor.execute(sql, (date, time, username, advertisement_id, virtual, 'pending'))
+        conn.commit()
 
         return True
     except Exception as e:
         print('ERROR', str(e))
+        conn.rollback()
         
         return False
     finally:
@@ -256,10 +258,12 @@ def accept_visit(landlord_username, visitor_username, advertisement_id, date, ti
         """
 
         cursor.execute(sql, (landlord_username, advertisement_id, visitor_username, date_parsed, time_parsed))
+        conn.commit()
 
         return True
     except Exception as e:
         print('ERROR', str(e))
+        conn.rollback()
         
         return False
     finally:
@@ -294,11 +298,13 @@ def reject_visit(landlord_username, visitor_username, advertisement_id, date, ti
         """
 
         cursor.execute(sql, (reject_reason, landlord_username, advertisement_id, visitor_username, date_parsed, time_parsed))
+        conn.commit()
 
         return True
     except Exception as e:
         print('ERROR', str(e))
-        
+        conn.rollback()
+
         return False
     finally:
         cursor.close()
