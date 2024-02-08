@@ -20,7 +20,7 @@
             </thead>
             <tbody>
                 {% for visit in landlord_visits %}
-                    <tr class="{{ 'borderless-upper-row' if visit.status == 'pending' else '' }}">
+                    <tr class="{{ 'borderless-upper-row' if visit.status == 'pending' or visit.status == 'rejected' else '' }}">
                         <td class="d-flex align-items-center">
                             {% if visit.status == 'accepted' %}
                                 <i class='bx bx-check-circle fs-2 text-success'></i>
@@ -72,7 +72,13 @@
                                 </form>
                             </div>
                         </td>
-                    </tr>                                
+                    </tr>
+                    {% elif visit.status == 'rejected' %}
+                    <tr class="borderless-lower-row">
+                        <td colspan="7">
+                            Hai rifiutato la visita con il seguente messaggio: <span class="text-danger">{{visit.refusal_reason}}</span>
+                        </td>
+                    </tr>
                     {% endif %}
                 {% endfor %}
             </tbody>
