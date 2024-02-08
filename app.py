@@ -39,7 +39,8 @@ def get_home():
 
         return render_template('home.html', advertisements=advertisements, sort_price=sort_price)
     except Exception as e:
-        flash(str(e), 'danger')
+        print('ERROR', str(e))
+        flash('Errore interno durante il caricamento della pagina', 'danger')
 
         return redirect(url_for('get_home'))
 
@@ -47,7 +48,7 @@ def get_home():
 def get_advertisement(id):
     try:
         advertisement = ads.get_ad_by_id(id=id)
-        if advertisement == None:
+        if advertisement is None:
             raise NotFound('Nessun annuncio corrispondente trovato')
 
         if not advertisement['available'] and (not current_user.is_authenticated or advertisement['landlord_username'] != current_user.username):
@@ -65,7 +66,9 @@ def get_advertisement(id):
         flash(str(e), 'warning')
         return redirect(url_for('get_home'))
     except Exception as e:
-        flash(str(e), 'danger')
+        print('ERROR', str(e))
+        flash('Errore interno durante il caricamento della pagina', 'danger')
+        
         return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>/visit')
@@ -73,7 +76,7 @@ def get_advertisement(id):
 def get_visit(id):
     try:
         advertisement = ads.get_ad_by_id(id=id)
-        if advertisement == None:
+        if advertisement is None:
             raise NotFound('Nessun annuncio corrispondente trovato')
 
         if visits.has_user_visited(username=current_user.username, advertisement_id=id):
@@ -92,7 +95,9 @@ def get_visit(id):
         flash(str(e), 'warning')
         return redirect(url_for('get_home'))
     except Exception as e:
-        flash(str(e), 'danger')
+        print('ERROR', str(e))
+        flash('Errore interno durante il caricamento della pagina', 'danger')
+        
         return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>/visit', methods=['POST'])
@@ -101,7 +106,7 @@ def post_visit(id):
     try:
         # Check if url is correct and user permissions
         advertisement = ads.get_ad_by_id(id=id)
-        if advertisement == None:
+        if advertisement is None:
             raise NotFound('Nessun annuncio corrispondente trovato')
 
         if visits.has_user_visited(username=current_user.username, advertisement_id=id):
@@ -139,35 +144,35 @@ def post_visit(id):
         flash(str(e), 'warning')
         return redirect(url_for('get_home'))
     except Exception as e:
-        flash(str(e), 'danger')
+        print('ERROR', str(e))
+        flash('Errore interno durante il caricamento della pagina', 'danger')
+        
         return redirect(url_for('get_home'))
 
 @app.route('/advertisement/<int:id>/edit')
 @login_required 
 def get_edit_advertisement(id):
-    # TODO
     try:
-        advertisement = ads.get_ad_by_id(id=id)
-        if advertisement == None:
+        if not current_user.landlord:
+            raise Forbidden("Solo i locatori possono modificare gli annunci")
+
+        advertisement = ads.get_ad_by_id_raw(id=id)
+
+        if advertisement is None:
             raise NotFound('Nessun annuncio corrispondente trovato')
 
-        if not advertisement['available'] and (not current_user.is_authenticated or advertisement['landlord_username'] != current_user.username):
-            raise NotFound('Nessun annuncio corrispondente trovato')    # Using 404 rather than 401 for security reasons: avoid leaking info on hidden houses
+        if advertisement['landlord_username'] != current_user.username:
+            raise Forbidden("Non puoi modificare l'annuncio di un altro locatore")
 
-        already_seen = False
-        pending_visit = False
-
-        if current_user.is_authenticated:
-            already_seen = visits.has_user_visited(username=current_user.username, advertisement_id=id)
-            pending_visit = visits.is_user_waiting_visit(username=current_user.username, advertisement_id=id)
-
-        return render_template('advertisement.html', ad=advertisement, seen=already_seen, pending=pending_visit)
+        return render_template('edit_ad.html', ad=advertisement)
     except HTTPException as e:
         flash(str(e), 'warning')
-        return redirect(url_for('get_home'))
+        return redirect(url_for('get_personal'))
     except Exception as e:
-        flash(str(e), 'danger')
-        return redirect(url_for('get_home'))
+        print('ERROR', str(e))
+        flash('Errore interno durante il caricamento della pagina', 'danger')
+        
+        return redirect(url_for('get_personal'))
 
 @app.route('/advertisement/new')
 @login_required
@@ -315,7 +320,9 @@ def post_accept_visit():
         flash(str(e), 'danger')
         return redirect(url_for('get_personal'))
     except Exception as e:
-        flash(str(e), 'danger')
+        print('ERROR', str(e))
+        flash('Errore interno durante il caricamento della pagina', 'danger')
+        
         return redirect(url_for('get_personal'))    
 
 @app.route('/rejectVisit', methods=['POST'])
@@ -346,7 +353,9 @@ def post_reject_visit():
         flash(str(e), 'danger')
         return redirect(url_for('get_personal'))
     except Exception as e:
-        flash(str(e), 'danger')
+        print('ERROR', str(e))
+        flash('Errore interno durante il caricamento della pagina', 'danger')
+        
         return redirect(url_for('get_personal'))        
 
 @app.route('/logout', methods=['POST'])

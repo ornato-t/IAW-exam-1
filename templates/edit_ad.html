@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Nuova inserzione{% endblock %}
+{% set title = 'edit' %}
+
+{% block content %}
+
+<form class="container w-35 my-4" method="post" enctype="multipart/form-data">
+    <h1 class="mb-4">Modifica un'inserzione</h1>
+
+    <section class="row mb-3">
+        <label for="ad-title" class="col-sm-4 col-form-label">Titolo</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" id="ad-title" name="title" required placeholder="Titolo dell'annuncio" value="{{ad.title}}">
+        </div>
+    </section>
+
+    <section class="row mb-3">
+        <label for="ad-adress" class="col-sm-4 col-form-label">Indirizzo</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" id="ad-adress" disabled placeholder="{{ad.adress}}">
+        </div>
+    </section>
+
+    <section class="row mb-3">
+        <label for="ad-type" class="col-sm-4 col-form-label">Tipologia</label>
+        <div class="col-sm-8">
+            <select class="form-select" id="ad-type" name="type" required>
+                <option value="" disabled hidden>Seleziona</option>
+                <option value="detached" {% if ad.type == 'detached' %}selected{% endif %}>Casa indipendente</option>
+                <option value="flat" {% if ad.type == 'flat' %}selected{% endif %}>Appartamento</option>      
+                <option value="loft" {% if ad.type == 'loft' %}selected{% endif %}>Loft</option>
+                <option value="villa" {% if ad.type == 'villa' %}selected{% endif %}>Villa</option>
+            </select> 
+        </div>
+    </section>
+
+    <section class="row mb-3">
+        <label for="ad-rooms" class="col-sm-4 col-form-label">Numero di locali</label>
+        <div class="col-sm-8">
+            <select class="form-select" id="ad-rooms" name="rooms" required>
+                <option value="" disabled hidden>Seleziona</option>
+                <option value="1" {% if ad.rooms == 1 %}selected{% endif %}>1</option>
+                <option value="2" {% if ad.rooms == 2 %}selected{% endif %}>2</option>
+                <option value="3" {% if ad.rooms == 3 %}selected{% endif %}>3</option>
+                <option value="4" {% if ad.rooms == 4 %}selected{% endif %}>4</option>
+                <option value="5" {% if ad.rooms == 5 %}selected{% endif %}>5</option>
+                <option value="6" {% if ad.rooms == 6 %}selected{% endif %}>5+</option>
+            </select> 
+        </div>
+    </section>
+    
+    <section class="row mb-3">
+        <label for="ad-description" class="col-sm-4 col-form-label">Descrizione</label>
+        <div class="col-sm-8">
+            <textarea class="form-control" id="ad-description" name="description" required placeholder="Descrizione della proprietà, amenità in zona, punti di riferimento...">{{ad.description}}</textarea>
+        </div>
+    </section>
+
+    <section class="row mb-3">
+        <label for="ad-rent" class="col-sm-4 col-form-label">Affitto mensile</label>
+        <div class="col-sm-6">
+            <input type="number" class="form-control" placeholder="100" min="0" id="ad-rent" name="rent" required value="{{ad.rent}}"/>
+        </div>
+        <span class="col-sm-2 col-form-label">
+            €/mese
+        </span>
+
+    </section>
+
+    <fieldset class="row mb-3">
+        <legend class="col-form-label col-sm-4 pt-0">La proprietà è arredata?</legend>
+        <div class="col-sm-8">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="ad-furniture1" name="furniture" value="true" {% if ad.furniture == 1 %}checked{% endif %}>
+                <label class="form-check-label" for="ad-furniture1">
+                    Sì
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="ad-furniture2" name="furniture" value="false" {% if ad.furniture == 0 %}checked{% endif %}>
+                <label class="form-check-label" for="ad-furniture2">
+                    No
+                </label>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="row mb-3">
+        <legend class="col-form-label col-sm-4 pt-0">La proprietà è disponibile?</legend>
+        <div class="col-sm-8">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="ad-available1" name="available" value="true" {% if ad.available == 1 %}checked{% endif %}>
+                <label class="form-check-label" for="ad-available1">
+                    Sì
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="ad-available2" name="available" value="false" {% if ad.available == 0 %}checked{% endif %}>
+                <label class="form-check-label" for="ad-available2">
+                    No
+                </label>
+            </div>
+        </div>
+    </fieldset>
+    <!-- TODO -->
+    <section class="row mb-3">
+        <label for="ad-image" class="col-sm-4 col-form-label">Aggiungi delle immagini (massimo 5)</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="immagine" type="file" id="ad-image" required multiple>
+        </div>
+    </section>
+
+    <button type="submit" class="btn btn-primary mt-3">Crea annuncio</button>
+</form>
+{% endblock %}

@@ -48,6 +48,26 @@ def get_ad_by_id(id):
     :param id: the id of the advertisement to be searched
     :returns: the advertisement
     """ 
+    advert = get_ad_by_id_raw(id)
+
+    if advert is None:
+        return None
+
+    advert['rooms'] = get_rooms(advert['rooms'])
+    advert['furniture'] = get_furniture(advert['furniture'], advert['type'])
+    advert['type'] = get_type(advert['type'])
+    advert['rent_num'] = advert['rent']
+    advert['rent'] = get_rent(advert['rent'])
+
+    return advert
+
+def get_ad_by_id_raw(id):
+    """
+    Queries the database and returns a matching advertisement. 
+    Same as get_ad_by_id() but returns the data in the SQLite raw format, without any processing applied to it
+
+    :returns: the advertisement or None
+    """
     conn = sqlite3.connect('database/database.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -72,12 +92,6 @@ def get_ad_by_id(id):
         return None
 
     advert = dict(res)
-
-    advert['rooms'] = get_rooms(advert['rooms'])
-    advert['furniture'] = get_furniture(advert['furniture'], advert['type'])
-    advert['type'] = get_type(advert['type'])
-    advert['rent_num'] = advert['rent']
-    advert['rent'] = get_rent(advert['rent'])
     advert['images'] = advert['images'].split(',')
 
     return advert
