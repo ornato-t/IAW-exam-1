@@ -113,7 +113,40 @@ def get_landlord_ads(username):
         result.append(ad)
 
     return result
-    
+
+def insert_ad(title, adress, description, rooms, rent, ad_type, furniture, available, pictures, landlord_username):
+    try:
+        # Cast non string types
+        rooms = int(rooms)
+        rent = int(rent)
+        furniture = furniture == 'true'
+        available = available == 'true'
+
+        conn = sqlite3.connect('database/database.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("BEGIN TRANSACTION")
+
+        sql = 'INSERT INTO ADVERTISEMENT(adress, title, rooms, type, description, rent, furniture, available, landlord_username) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)'
+
+        cursor.execute(sql, (adress, title, rooms, ad_type, description, rent, furniture, available, landlord_username))
+        id = cursor.lastrowid   # ID of the inserted advertisement
+
+        pictures = [(picture_path, id) for picture_path in pictures]    # Map list of paths to list of tuples
+        sql_picture = 'INSERT INTO PICTURES(path, ADVERTISEMENT_id) VALUES(?, ?)'
+        cursor.executemany(sql_picture, pictures)   # This is ran as a signle INSERT statement
+
+        conn.commit()
+        return True
+    except Exception as e:
+        print('ERROR', str(e))
+        conn.rollback()
+        
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
 # HELPER FUNCTIONS
 
 def get_rooms(num):

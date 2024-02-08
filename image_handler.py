@@ -28,7 +28,7 @@ def save_image(image_form):
 
     # Save a new image with the same extension as the original and a UUID for its name
     file_extension = image_form.filename.split('.')[-1]
-    new_filename = f'static/images/{uuid.uuid4()}.{file_extension}'
-    new_img.save(new_filename)
+    new_filename = f'{uuid.uuid4()}.{file_extension}'
+    new_img.save(f'static/images/{new_filename}')
 
     return new_filename

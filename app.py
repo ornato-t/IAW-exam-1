@@ -188,10 +188,31 @@ def post_new_advertisement():
         req = request.form.to_dict()
         files = request.files.getlist('immagine')
 
+        # Check if form is valid
+        if not re.match(r'\w+', req['title']):
+            raise BadRequest("Errore di formattazione nel campo 'title'")
+        if not re.match(r'\w+', req['adress']):
+            raise BadRequest("Errore di formattazione nel campo 'adress'")
+        if not re.match(r'\w+', req['description']):
+            raise BadRequest("Errore di formattazione nel campo 'description'")
+        if not re.match(r'^[123456]$', req['rooms']):
+            raise BadRequest("Errore di formattazione nel campo 'rooms'")
+        if not re.match(r'\d+', req['rent']):
+            raise BadRequest("Errore di formattazione nel campo 'rent'")
+        if req['type'] not in ['detached', 'flat', 'loft', 'villa']:
+            raise BadRequest("Errore di formattazione nel campo 'type'")
+        if req['furniture'] not in ['true', 'false']:
+            raise BadRequest("Errore di formattazione nel campo 'furniture'")
+        if req['available'] not in ['true', 'false']:
+            raise BadRequest("Errore di formattazione nel campo 'available'")
+
         # Only parse the first 5 images (imposing upload cap, can't do it on client)
+        paths = []
         for file in files[:5]:
-            image = image_handler.save_image(image_form=file)
-            print(image)
+            paths.append(image_handler.save_image(image_form=file))
+
+        if not ads.insert_ad(title=req['title'], adress=req['adress'], available=req['available'], description=req['description'], furniture=req['furniture'], rent=req['rent'], rooms=req['rooms'], ad_type=req['type'], pictures=paths, landlord_username=current_user.username):
+            raise InternalServerError('Errore durante il salvataggio dell\'inserzione')
 
         flash('Inserzione creata con successo', 'success')
         return render_template('new_ad.html')
