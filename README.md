@@ -1,6 +1,9 @@
 # IAW-exam-1
 La presente contiene l'applicazione "renTO", progetto di Tommaso Ornato per il primo appello dell'esame "Introduzione alle Applicazioni Web" del Politecnico di Torino.
 
+# Deployment
+L'applicazione è disponibile sulla piattaforma Python Anywhere al seguente [link](https://ornatot.eu.pythonanywhere.com/).
+
 # Utenti
 Gli utenti utilizzano un nome utente (univoco) e una password per effettuare il login. Al momento della consegna, il database contiene i seguenti utenti:
 
