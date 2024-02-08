@@ -42,14 +42,11 @@
         <input
             class="form-control"
             placeholder="•••••••" name="password" id="passwordForm" type="password" aria-describedby="passwordFormDescr"
-            required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$"
+            required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,30}$"
         >
         <div id="passwordFormDescr" class="form-text">
             <p>
                 La tua password dovrà contenere un minimo di 8 caratteri, una lettera minuscola, una lettera maiuscola, un numero e un carattere speciale.
-                <br>
-                Caratteri speciali ammessi:
-                @ $ ! % * ? &
             </p>
         </div>
     </section>

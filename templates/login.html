@@ -20,7 +20,7 @@
         <input
             class="form-control"
             placeholder="•••••••" name="password" id="passwordForm" type="password"
-            required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$"
+            required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,30}$"
         >
     </section>
     

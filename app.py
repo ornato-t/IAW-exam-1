@@ -447,7 +447,7 @@ def validate_signup(user):
     username_regex = r'^\w{1,30}$'
     email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     name_regex = r'^[a-zA-Z\sÀ-ž\']{1,30}$'
-    password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$'
+    password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,30}$'
     client_types = ["client", "landlord"]
 
     if not re.match(username_regex, user['username']):
@@ -469,7 +469,7 @@ def validate_login(user):
     :raise BadRequest: exception raised when the form isn't valid    
     """ 
     username_regex = r'^\w{1,30}$'
-    password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$'
+    password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,30}$'
 
     if not re.match(username_regex, user['username']):
         raise BadRequest("Username non valido")
