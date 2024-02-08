@@ -39,3 +39,30 @@ def get_user(username):
     finally:
         cursor.close()
         conn.close()
+
+def user_exists(username):
+    """
+    Checks whether a user exists in the database
+
+    :returns: True if a username is contained in the database, False otherwise
+    """
+    try:
+        conn = sqlite3.connect('database/database.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        sql = 'SELECT 1 FROM PERSON WHERE username = ?'
+
+        cursor.execute(sql, (username,))
+        user = cursor.fetchone()
+
+        if user is not None:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print("ERROR", e)
+        return False
+    finally:
+        cursor.close()
+        conn.close()

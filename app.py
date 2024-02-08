@@ -310,6 +310,9 @@ def post_signup():
         user = request.form.to_dict()
         validate_signup(user)   # Raises an exception if the form is invalid
 
+        if user_db.user_exists(user['username']):
+            raise BadRequest("Username già esistente. Scegliere un altro nome utente.")
+
         user['password'] = generate_password_hash(user['password'])
         
         if not user_db.add_user(user):  # Returns False if an error occurred
