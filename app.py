@@ -192,9 +192,9 @@ def post_edit_advertisement(id):
         files = request.files.getlist('immagine')
 
         # Check if form is valid
-        if not re.match(r'\w+', req['title']):
+        if not re.match(r'.+', req['title']):
             raise BadRequest("Errore di formattazione nel campo 'title'")
-        if not re.match(r'\w+', req['description']):
+        if not re.match(r'.+', req['description']):
             raise BadRequest("Errore di formattazione nel campo 'description'")
         if not re.match(r'^[123456]$', req['rooms']):
             raise BadRequest("Errore di formattazione nel campo 'rooms'")
@@ -262,11 +262,11 @@ def post_new_advertisement():
         files = request.files.getlist('immagine')
 
         # Check if form is valid
-        if not re.match(r'\w+', req['title']):
+        if not re.match(r'.+', req['title']):
             raise BadRequest("Errore di formattazione nel campo 'title'")
-        if not re.match(r'\w+', req['adress']):
+        if not re.match(r'.+', req['adress']):
             raise BadRequest("Errore di formattazione nel campo 'adress'")
-        if not re.match(r'\w+', req['description']):
+        if not re.match(r'.+', req['description']):
             raise BadRequest("Errore di formattazione nel campo 'description'")
         if not re.match(r'^[123456]$', req['rooms']):
             raise BadRequest("Errore di formattazione nel campo 'rooms'")
